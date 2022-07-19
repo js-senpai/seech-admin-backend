@@ -25,7 +25,7 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('User not found!');
     }
-    if(user.type !== 'admin' || user.type !== 'moderator'){
+    if(user.type !== 'admin' && user.type !== 'moderator'){
       throw new UnauthorizedException('User doesnt have access!');
     }
     const authTg = await checkTgAuth({
