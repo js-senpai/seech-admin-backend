@@ -16,7 +16,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd /home/backend/project/
-            rm ./seech-admin-backend
+            rmdir -f ./seech-admin-backend
             git clone https://github.com/js-senpai/seech-admin-backend.git
             cd seech-admin-backend/
             npm i
