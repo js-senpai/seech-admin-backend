@@ -20,7 +20,6 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd /home/backend/project/
-            git remote set-url origin git@github.com:seechua/seech-admin-backend.git
             git pull
             npm i
             npm run build
