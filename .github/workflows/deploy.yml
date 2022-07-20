@@ -15,9 +15,9 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            cd /home/backend/project/seech-admin-backend
-            git status
-            git pull origin main
+            cd /home/backend/project/
+            rmd ./seech-admin-backend
+            git clone https://github.com/js-senpai/seech-admin-backend.git
             npm i
             npm run build
             pm2 restart backend
