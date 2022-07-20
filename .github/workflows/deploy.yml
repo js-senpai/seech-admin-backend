@@ -12,7 +12,6 @@ jobs:
       - uses: fregante/setup-git-token@v1
           with:
               token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Deploy NodeJS app
         uses: appleboy/ssh-action@v0.1.2
         with:
