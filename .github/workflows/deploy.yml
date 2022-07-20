@@ -16,6 +16,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd /home/backend/project/seech-admin-backend
+            git status
             git pull origin main
             npm i
             npm run build
