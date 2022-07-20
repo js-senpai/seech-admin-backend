@@ -8,16 +8,13 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Github settings
-        uses: actions/labeler@v2
-          with:
-            repo-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Deploy NodeJS app
         uses: appleboy/ssh-action@v0.1.2
         with:
           host: ${{secrets.SSH_HOST}}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             cd /home/backend/project/seech-admin-backend
             git status
