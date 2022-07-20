@@ -14,11 +14,9 @@ jobs:
           host: ${{secrets.SSH_HOST}}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             cd /home/backend/project/seech-admin-backend
-            git config --global url.ssh://git@github.com/.insteadOf https://github.com/
-            git pull origin main
+            sudo git pull origin main
             npm i
             npm run build
             pm2 restart backend
