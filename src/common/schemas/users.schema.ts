@@ -60,6 +60,12 @@ export class User {
 
   @Prop({ type: String, default: 'mainMenu' })
   prevMenu: string;
+
+  @Prop({ type: Boolean, default: false })
+  disablePurchaseNotification: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  disableBuyNotification: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
