@@ -3,7 +3,6 @@ export interface GetKpiStatisticInterface {
     totalUsers: number;
     activeUsers: number;
     ratingOfService: number;
-    totalNewReg: number;
     totalSaleTickets: number;
     totalBuyTickets: number;
   }[];
