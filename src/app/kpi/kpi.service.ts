@@ -12,7 +12,7 @@ import {
 } from '../../common/schemas/reviewOfService.schema';
 import { Ticket, TicketDocument } from '../../common/schemas/ticket.schema';
 import { GetKpiStatisticInterface } from './kpi.interfaces';
-import moment from 'moment';
+import * as moment from 'moment';
 
 @Injectable()
 export class KpiService {
@@ -26,8 +26,8 @@ export class KpiService {
   ) {}
 
   async get({
-    startDate,
-    endDate,
+    startDate = moment().set('date', 1),
+    endDate = moment(),
     region,
     state,
     otg,
@@ -66,7 +66,9 @@ export class KpiService {
             },
           ])
         : [];
-      const { rate = 0 } = getReviewsIds.length ? getAvgReview[0] : { rate: 0 };
+      const { rate = 0 } = filteredReviewsIds.length
+        ? getAvgReview[0]
+        : { rate: 0 };
       const getUsers = await this.userModel.find({
         ...(region && {
           region: {
