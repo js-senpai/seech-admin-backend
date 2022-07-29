@@ -16,6 +16,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd /home/backend/project/
+            git config --global --add safe.directory /home/backend/project
             sudo git pull origin main
             npm i
             npm run build
