@@ -26,14 +26,14 @@ export class KpiService {
   ) {}
 
   async get({
-    startDate,
-    endDate,
-    regions,
-    states,
-    otg,
-    types,
-    subtypes,
-    active,
+    startDate = '',
+    endDate = '',
+    regions = '',
+    states = '',
+    otg = '',
+    types = '',
+    subtypes = '',
+    active = '',
   }): Promise<GetKpiStatisticInterface> {
     try {
       const getReviewsIds = await this.reviewOfServiceModel.find();
@@ -106,8 +106,8 @@ export class KpiService {
           : getUsers;
       const getTotalBuyTickets = await this.ticketModel.find({
         sale: false,
-        ...(typeof active !== 'undefined' && {
-          active,
+        ...(active && {
+          active: active === 'true',
         }),
         authorId: {
           $in: filteredUsers.map(({ userId }) => userId),
@@ -135,7 +135,7 @@ export class KpiService {
           : getTotalBuyTickets;
       const getTotalSaleTickets = await this.ticketModel.find({
         sale: true,
-        ...(typeof active !== 'undefined' && {
+        ...(active && {
           active: active === 'true',
         }),
         authorId: {
