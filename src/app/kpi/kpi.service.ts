@@ -26,8 +26,8 @@ export class KpiService {
   ) {}
 
   async get({
-    startDate = moment().set('date', 1),
-    endDate = moment(),
+    startDate,
+    endDate,
     regions,
     states,
     otg,
@@ -37,18 +37,21 @@ export class KpiService {
   }): Promise<GetKpiStatisticInterface> {
     try {
       const getReviewsIds = await this.reviewOfServiceModel.find();
-      const filteredReviewsIds = getReviewsIds.filter(
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        ({ createdAt }) =>
-          createdAt &&
-          moment(createdAt).isBetween(
-            moment(startDate, 'DD-MM-YYYY'),
-            moment(endDate, 'DD-MM-YYYY'),
-            'day',
-            '[]',
-          ),
-      );
+      const filteredReviewsIds =
+        startDate && endDate
+          ? getReviewsIds.filter(
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              ({ createdAt }) =>
+                createdAt &&
+                moment(createdAt).isBetween(
+                  moment(startDate, 'DD-MM-YYYY'),
+                  moment(endDate, 'DD-MM-YYYY'),
+                  'day',
+                  '[]',
+                ),
+            )
+          : getReviewsIds;
       const getAvgReview = getReviewsIds.length
         ? await this.reviewOfServiceModel.aggregate([
             {
@@ -86,18 +89,21 @@ export class KpiService {
           },
         }),
       });
-      const filteredUsers = getUsers.filter(
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        ({ createdAt }) =>
-          createdAt &&
-          moment(createdAt).isBetween(
-            moment(startDate, 'DD-MM-YYYY'),
-            moment(endDate, 'DD-MM-YYYY'),
-            'day',
-            '[]',
-          ),
-      );
+      const filteredUsers =
+        startDate && endDate
+          ? getUsers.filter(
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              ({ createdAt }) =>
+                createdAt &&
+                moment(createdAt).isBetween(
+                  moment(startDate, 'DD-MM-YYYY'),
+                  moment(endDate, 'DD-MM-YYYY'),
+                  'day',
+                  '[]',
+                ),
+            )
+          : getUsers;
       const getTotalBuyTickets = await this.ticketModel.find({
         sale: false,
         ...(typeof active !== 'undefined' && {
@@ -112,18 +118,21 @@ export class KpiService {
           },
         }),
       });
-      const filteredTotalBuyTickets = getTotalBuyTickets.filter(
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        ({ createdAt }) =>
-          createdAt &&
-          moment(createdAt).isBetween(
-            moment(startDate, 'DD-MM-YYYY'),
-            moment(endDate, 'DD-MM-YYYY'),
-            'day',
-            '[]',
-          ),
-      );
+      const filteredTotalBuyTickets =
+        startDate && endDate
+          ? getTotalBuyTickets.filter(
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              ({ createdAt }) =>
+                createdAt &&
+                moment(createdAt).isBetween(
+                  moment(startDate, 'DD-MM-YYYY'),
+                  moment(endDate, 'DD-MM-YYYY'),
+                  'day',
+                  '[]',
+                ),
+            )
+          : getTotalBuyTickets;
       const getTotalSaleTickets = await this.ticketModel.find({
         sale: true,
         ...(typeof active !== 'undefined' && {
@@ -138,18 +147,21 @@ export class KpiService {
           },
         }),
       });
-      const filteredTotalSaleTickets = getTotalSaleTickets.filter(
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        ({ createdAt }) =>
-          createdAt &&
-          moment(createdAt).isBetween(
-            moment(startDate, 'DD-MM-YYYY'),
-            moment(endDate, 'DD-MM-YYYY'),
-            'day',
-            '[]',
-          ),
-      );
+      const filteredTotalSaleTickets =
+        startDate && endDate
+          ? getTotalSaleTickets.filter(
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              ({ createdAt }) =>
+                createdAt &&
+                moment(createdAt).isBetween(
+                  moment(startDate, 'DD-MM-YYYY'),
+                  moment(endDate, 'DD-MM-YYYY'),
+                  'day',
+                  '[]',
+                ),
+            )
+          : getTotalSaleTickets;
       const getActiveUsers =
         filteredTotalBuyTickets.length && filteredTotalSaleTickets.length
           ? await this.userModel.find({
@@ -176,18 +188,21 @@ export class KpiService {
               }),
             })
           : [];
-      const filteredActiveUsers = getActiveUsers.filter(
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        ({ createdAt }) =>
-          createdAt &&
-          moment(createdAt).isBetween(
-            moment(startDate, 'DD-MM-YYYY'),
-            moment(endDate, 'DD-MM-YYYY'),
-            'day',
-            '[]',
-          ),
-      );
+      const filteredActiveUsers =
+        startDate && endDate
+          ? getActiveUsers.filter(
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              ({ createdAt }) =>
+                createdAt &&
+                moment(createdAt).isBetween(
+                  moment(startDate, 'DD-MM-YYYY'),
+                  moment(endDate, 'DD-MM-YYYY'),
+                  'day',
+                  '[]',
+                ),
+            )
+          : getActiveUsers;
       return {
         items: [
           {
