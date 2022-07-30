@@ -28,8 +28,8 @@ export class KpiService {
   async get({
     startDate = moment().set('date', 1),
     endDate = moment(),
-    region,
-    state,
+    regions,
+    states,
     otg,
     types,
     subtypes,
@@ -70,14 +70,14 @@ export class KpiService {
         ? getAvgReview[0]
         : { rate: 0 };
       const getUsers = await this.userModel.find({
-        ...(region && {
+        ...(regions && {
           region: {
-            $in: region.split(','),
+            $in: regions.split(','),
           },
         }),
-        ...(state && {
+        ...(states && {
           countryState: {
-            $in: state.split(','),
+            $in: states.split(','),
           },
         }),
         ...(otg && {
@@ -127,7 +127,7 @@ export class KpiService {
       const getTotalSaleTickets = await this.ticketModel.find({
         sale: true,
         ...(typeof active !== 'undefined' && {
-          active,
+          active: active === 'true',
         }),
         authorId: {
           $in: filteredUsers.map(({ userId }) => userId),
@@ -159,14 +159,14 @@ export class KpiService {
                   ...filteredTotalBuyTickets.map(({ authorId }) => authorId),
                 ],
               },
-              ...(region && {
+              ...(regions && {
                 region: {
-                  $in: region.split(','),
+                  $in: regions.split(','),
                 },
               }),
-              ...(state && {
+              ...(states && {
                 countryState: {
-                  $in: state.split(','),
+                  $in: states.split(','),
                 },
               }),
               ...(otg && {
