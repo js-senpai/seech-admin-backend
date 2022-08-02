@@ -5,7 +5,10 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './app/auth/auth.module';
 import { UserModule } from './app/user/user.module';
-import {KpiModule} from "./app/kpi/kpi.module";
+import { KpiModule } from './app/kpi/kpi.module';
+import { TicketsBuyService } from './app/tickets-buy/tickets-buy.service';
+import { TicketsBuyModule } from './app/tickets-buy/tickets-buy.module';
+import { TicketsSaleModule } from './app/tickets-sale/tickets-sale.module';
 
 @Module({
   imports: [
@@ -22,6 +25,8 @@ import {KpiModule} from "./app/kpi/kpi.module";
     AuthModule,
     UserModule,
     KpiModule,
+    TicketsBuyModule,
+    TicketsSaleModule,
   ],
   controllers: [AppController],
   providers: [AppService],
