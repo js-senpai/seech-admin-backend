@@ -116,34 +116,36 @@ export class TicketsBuyService {
         // @ts-ignore
         createdAt,
         culture,
-        active,
-        photo,
-        description,
+        active = false,
+        photo = '',
+        description = '',
         weight,
         price,
-        weightType,
+        weightType = 'not set',
       } of filteredTotalBuyTickets) {
-        const getUser = await this.userModel.findOne({
-          userId: authorId,
-        });
-        if (getUser) {
-          const { region, countryState, countryOtg, name, phone } = getUser;
-          items.push({
-            date: moment(createdAt).format('DD.MM.YYYY'),
-            dateTime: moment(createdAt).format('HH:mm:ss'),
-            type: culture,
-            col: weight,
-            weightType,
-            price,
-            active,
-            region,
-            state: countryState,
-            otg: countryOtg,
-            name,
-            phone,
-            description,
-            photo,
+        if (createdAt) {
+          const getUser = await this.userModel.findOne({
+            userId: authorId,
           });
+          if (getUser) {
+            const { region, countryState, countryOtg, name, phone } = getUser;
+            items.push({
+              date: moment(createdAt).format('DD.MM.YYYY'),
+              dateTime: moment(createdAt).format('HH:mm:ss'),
+              type: culture,
+              col: weight,
+              weightType,
+              price,
+              active,
+              region,
+              state: countryState,
+              otg: countryOtg,
+              name,
+              phone,
+              description,
+              photo,
+            });
+          }
         }
       }
       return {
