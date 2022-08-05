@@ -13,6 +13,7 @@ import { GetTicketsInterface } from '../../common/interfaces/tickets.interfaces'
 @Injectable()
 export class TicketsBuyService {
   private readonly logger = new Logger(TicketsBuyService.name);
+
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     @InjectModel(Ticket.name)
@@ -118,20 +119,28 @@ export class TicketsBuyService {
         active,
         photo,
         description,
+        weight,
+        price,
+        weightType,
       } of filteredTotalBuyTickets) {
         const getUser = await this.userModel.findOne({
           userId: authorId,
         });
         if (getUser) {
-          const { region, countryState, countryOtg } = getUser;
+          const { region, countryState, countryOtg, name, phone } = getUser;
           items.push({
             date: moment(createdAt).format('DD.MM.YYYY'),
             dateTime: moment(createdAt).format('HH:mm:ss'),
             type: culture,
+            col: weight,
+            weightType,
+            price,
             active,
             region,
             state: countryState,
             otg: countryOtg,
+            name,
+            phone,
             description,
             photo,
           });

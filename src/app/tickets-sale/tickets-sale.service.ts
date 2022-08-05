@@ -118,20 +118,28 @@ export class TicketsSaleService {
         active,
         photo,
         description,
+        weight,
+        price,
+        weightType,
       } of filteredTotalBuyTickets) {
         const getUser = await this.userModel.findOne({
           userId: authorId,
         });
         if (getUser) {
-          const { region, countryState, countryOtg } = getUser;
+          const { region, countryState, countryOtg, name, phone } = getUser;
           items.push({
             date: moment(createdAt).format('DD.MM.YYYY'),
             dateTime: moment(createdAt).format('HH:mm:ss'),
             type: culture,
+            col: weight,
+            price,
+            weightType,
             active,
             region,
             state: countryState,
             otg: countryOtg,
+            name,
+            phone,
             description,
             photo,
           });
