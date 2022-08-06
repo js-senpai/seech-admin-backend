@@ -29,8 +29,8 @@ export class TicketsBuyService {
     types = '',
     subtypes = '',
     active = '',
-    orderByDate = 'desc',
-    orderByCol,
+    sortBy = 'desc',
+    sortDesc = 'true',
   }): Promise<GetTicketsInterface> {
     try {
       const getUsers = await this.userModel.find({
@@ -81,14 +81,14 @@ export class TicketsBuyService {
           }),
         },
         null,
-        orderByDate || orderByCol
+        sortBy
           ? {
               sort: {
-                ...(orderByDate && {
-                  createdAt: orderByDate === 'desc' ? -1 : 1,
+                ...(sortBy === 'date' && {
+                  createdAt: sortDesc === 'true' ? -1 : 1,
                 }),
-                ...(orderByCol && {
-                  weight: orderByCol === 'desc' ? -1 : 1,
+                ...(sortBy === 'col' && {
+                  weight: sortDesc === 'true' ? -1 : 1,
                 }),
               },
             }
