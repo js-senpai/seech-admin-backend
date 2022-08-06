@@ -29,7 +29,7 @@ export class TicketsBuyService {
     types = '',
     subtypes = '',
     active = '',
-    orderByDate,
+    orderByDate = 'desc',
     orderByCol,
   }): Promise<GetTicketsInterface> {
     try {
