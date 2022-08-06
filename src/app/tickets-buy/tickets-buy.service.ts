@@ -120,7 +120,6 @@ export class TicketsBuyService {
         photo = '',
         description = '',
         weight,
-        price,
         weightType = 'not set',
       } of filteredTotalBuyTickets) {
         if (createdAt) {
@@ -135,7 +134,6 @@ export class TicketsBuyService {
               type: culture,
               col: weight,
               weightType,
-              price,
               active,
               region,
               state: countryState,
@@ -143,7 +141,6 @@ export class TicketsBuyService {
               name,
               phone,
               description,
-              photo,
             });
           }
         }

@@ -5,7 +5,7 @@ export interface GetTicketsInterface {
     type: string;
     weightType: string;
     col: number;
-    price: number;
+    price?: number;
     active: boolean;
     region: number;
     state: number;
@@ -13,6 +13,6 @@ export interface GetTicketsInterface {
     name: string;
     phone: string;
     description: string;
-    photo: string;
+    photo?: string;
   }[];
 }
