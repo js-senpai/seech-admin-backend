@@ -28,7 +28,7 @@ export class TicketsSaleService {
     types = '',
     subtypes = '',
     active = '',
-    sortBy = 'desc',
+    sortBy = 'date',
     sortDesc = 'true',
   }): Promise<GetTicketsInterface> {
     try {
