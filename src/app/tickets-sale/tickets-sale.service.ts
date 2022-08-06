@@ -116,7 +116,6 @@ export class TicketsSaleService {
         createdAt,
         culture,
         active = false,
-        photo = '',
         description = '',
         weight,
         price,
@@ -142,7 +141,6 @@ export class TicketsSaleService {
               name,
               phone,
               description,
-              photo,
             });
           }
         }
