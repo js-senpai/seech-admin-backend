@@ -1,4 +1,19 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { PricesService } from './prices.service';
+import PricesDto from './prices.dto';
+import { GetPricesInterface } from './prices.interfaces';
 
 @Controller('prices')
-export class PricesController {}
+@UseGuards(AuthGuard())
+export class PricesController {
+  constructor(private readonly priceService: PricesService) {}
+
+  @Get(':lang')
+  async get(
+    @Param('lang') lang,
+    @Query() query: PricesDto,
+  ): Promise<GetPricesInterface> {
+    return this.priceService.get({ ...query, lang });
+  }
+}

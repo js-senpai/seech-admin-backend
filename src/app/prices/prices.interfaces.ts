@@ -1,3 +1,6 @@
 export interface GetPricesInterface {
-  items: {};
+  items: {
+    name: string;
+    value: string;
+  }[];
 }

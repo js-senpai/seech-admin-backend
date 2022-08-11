@@ -12,6 +12,7 @@ import { TicketsSaleModule } from './app/tickets-sale/tickets-sale.module';
 import { KpiMonthlyModule } from './app/kpi-monthly/kpi-monthly.module';
 import path from 'path';
 import { I18nModule } from 'nestjs-i18n';
+import { PricesModule } from './app/prices/prices.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { I18nModule } from 'nestjs-i18n';
     TicketsBuyModule,
     TicketsSaleModule,
     KpiMonthlyModule,
+    PricesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
