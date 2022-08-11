@@ -9,6 +9,7 @@ import { Model } from 'mongoose';
 import { Ticket, TicketDocument } from '../../common/schemas/ticket.schema';
 import * as moment from 'moment/moment';
 import { GetTicketsInterface } from '../../common/interfaces/tickets.interfaces';
+import TicketsBuyDto from './tickets-buy.dto';
 
 @Injectable()
 export class TicketsBuyService {
@@ -31,7 +32,7 @@ export class TicketsBuyService {
     active = '',
     sortBy = 'date',
     sortDesc = 'true',
-  }): Promise<GetTicketsInterface> {
+  }: TicketsBuyDto): Promise<GetTicketsInterface> {
     try {
       const getUsers = await this.userModel.find({
         ...(regions && {
@@ -109,7 +110,9 @@ export class TicketsBuyService {
                 ),
             )
           : getTotalBuyTickets;
-      const items = [];
+      const response: GetTicketsInterface = {
+        items: [],
+      };
       for (const {
         authorId,
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -117,7 +120,6 @@ export class TicketsBuyService {
         createdAt,
         culture,
         active = false,
-        photo = '',
         description = '',
         weight,
         weightType = 'not set',
@@ -128,7 +130,7 @@ export class TicketsBuyService {
           });
           if (getUser) {
             const { region, countryState, countryOtg, name, phone } = getUser;
-            items.push({
+            response.items.push({
               date: moment(createdAt).format('DD.MM.YYYY'),
               dateTime: moment(createdAt).format('HH:mm:ss'),
               type: culture,
@@ -145,9 +147,7 @@ export class TicketsBuyService {
           }
         }
       }
-      return {
-        items,
-      };
+      return response;
     } catch (e) {
       this.logger.error(`Error in get tickets buy statistic method.  ${e}`);
       throw new InternalServerErrorException(

@@ -8,11 +8,10 @@ export interface GetTicketsInterface {
     price?: number;
     active: boolean;
     region: number;
-    state: number;
-    otg: number;
+    state: string;
+    otg: string;
     name: string;
-    phone: string;
+    phone: number;
     description: string;
-    photo?: string;
   }[];
 }

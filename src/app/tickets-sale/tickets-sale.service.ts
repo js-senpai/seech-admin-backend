@@ -9,6 +9,7 @@ import { Model } from 'mongoose';
 import { Ticket, TicketDocument } from '../../common/schemas/ticket.schema';
 import * as moment from 'moment';
 import { GetTicketsInterface } from '../../common/interfaces/tickets.interfaces';
+import TicketsSaleDto from './tickets-sale.dto';
 
 @Injectable()
 export class TicketsSaleService {
@@ -30,7 +31,7 @@ export class TicketsSaleService {
     active = '',
     sortBy = 'date',
     sortDesc = 'true',
-  }): Promise<GetTicketsInterface> {
+  }: TicketsSaleDto): Promise<GetTicketsInterface> {
     try {
       const getUsers = await this.userModel.find({
         ...(regions && {
@@ -108,7 +109,9 @@ export class TicketsSaleService {
                 ),
             )
           : getTotalSaleTickets;
-      const items = [];
+      const response: GetTicketsInterface = {
+        items: [],
+      };
       for (const {
         authorId,
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -127,7 +130,7 @@ export class TicketsSaleService {
           });
           if (getUser) {
             const { region, countryState, countryOtg, name, phone } = getUser;
-            items.push({
+            response.items.push({
               date: moment(createdAt).format('DD.MM.YYYY'),
               dateTime: moment(createdAt).format('HH:mm:ss'),
               type: culture,
@@ -145,9 +148,7 @@ export class TicketsSaleService {
           }
         }
       }
-      return {
-        items,
-      };
+      return response;
     } catch (e) {
       this.logger.error(`Error in get tickets sale statistic method.  ${e}`);
       throw new InternalServerErrorException(

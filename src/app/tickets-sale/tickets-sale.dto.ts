@@ -1,6 +1,6 @@
 import { IsDateString, IsOptional, IsString } from 'class-validator';
 
-export default class KpiDto {
+export default class TicketsSaleDto {
   @IsOptional()
   @IsDateString()
   startDate: string;

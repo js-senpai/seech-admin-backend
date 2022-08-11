@@ -9,6 +9,7 @@ import { KpiModule } from './app/kpi/kpi.module';
 import { TicketsBuyService } from './app/tickets-buy/tickets-buy.service';
 import { TicketsBuyModule } from './app/tickets-buy/tickets-buy.module';
 import { TicketsSaleModule } from './app/tickets-sale/tickets-sale.module';
+import { KpiMonthlyModule } from './app/kpi-monthly/kpi-monthly.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { TicketsSaleModule } from './app/tickets-sale/tickets-sale.module';
     KpiModule,
     TicketsBuyModule,
     TicketsSaleModule,
+    KpiMonthlyModule,
   ],
   controllers: [AppController],
   providers: [AppService],

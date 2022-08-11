@@ -13,6 +13,7 @@ import {
 import { Ticket, TicketDocument } from '../../common/schemas/ticket.schema';
 import { GetKpiStatisticInterface } from './kpi.interfaces';
 import * as moment from 'moment';
+import KpiDto from './kpi.dto';
 
 @Injectable()
 export class KpiService {
@@ -34,7 +35,7 @@ export class KpiService {
     types = '',
     subtypes = '',
     active = '',
-  }): Promise<GetKpiStatisticInterface> {
+  }: KpiDto): Promise<GetKpiStatisticInterface> {
     try {
       const getReviewsIds = await this.reviewOfServiceModel.find();
       const filteredReviewsIds =
