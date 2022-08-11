@@ -1,12 +1,12 @@
-import { IsDateString, IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export default class TicketsSaleDto {
   @IsOptional()
-  @IsDateString()
+  @IsString()
   startDate: string;
 
   @IsOptional()
-  @IsDateString()
+  @IsString()
   endDate: string;
 
   @IsOptional()

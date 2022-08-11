@@ -10,6 +10,8 @@ import { TicketsBuyService } from './app/tickets-buy/tickets-buy.service';
 import { TicketsBuyModule } from './app/tickets-buy/tickets-buy.module';
 import { TicketsSaleModule } from './app/tickets-sale/tickets-sale.module';
 import { KpiMonthlyModule } from './app/kpi-monthly/kpi-monthly.module';
+import path from 'path';
+import { I18nModule } from 'nestjs-i18n';
 
 @Module({
   imports: [
@@ -22,6 +24,17 @@ import { KpiMonthlyModule } from './app/kpi-monthly/kpi-monthly.module';
         uri: configService.get<string>('MONGODB_URI'),
       }),
       inject: [ConfigService],
+    }),
+    // i18n
+    I18nModule.forRoot({
+      fallbackLanguage: 'ua',
+      fallbacks: {
+        ua: 'ua',
+      },
+      loaderOptions: {
+        path: path.join(__dirname, '/i18n/'),
+        watch: true,
+      },
     }),
     AuthModule,
     UserModule,
