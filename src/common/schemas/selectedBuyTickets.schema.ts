@@ -6,7 +6,7 @@ import { Ticket } from './ticket.schema';
 export type SelectedBuyTicketsDocument = SelectedBuyTickets & Document;
 
 @Schema({
-  collection: 'SelectedBuyTickets',
+  collection: 'selectedBuyTickets',
   versionKey: false,
   timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },
 })

@@ -1,6 +1,7 @@
 export interface GetTicketsInterface {
   items: {
     _id: string;
+    checked: boolean;
     date: string;
     dateTime: string;
     type: string;

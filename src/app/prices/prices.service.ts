@@ -117,11 +117,16 @@ export class PricesService {
                   },
                 },
               ]);
-              response.items.push({
-                name: property,
-                title: getProducts[localeName][property],
-                value: (value?.avg || 0).toFixed(2),
-              });
+              const findDuplicates = response.items.findIndex(
+                ({ name }) => name === property,
+              );
+              if (findDuplicates === -1) {
+                response.items.push({
+                  name: property,
+                  title: getProducts[localeName][property],
+                  value: (value?.avg || 0).toFixed(2),
+                });
+              }
             }
           }
         }

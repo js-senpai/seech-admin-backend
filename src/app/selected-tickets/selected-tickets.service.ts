@@ -64,83 +64,109 @@ export class SelectedTicketsService {
           $in: activeTicketsIds,
         },
       });
-      if (activeTicketsIds.length) {
-        if (!getSelectedTickets) {
-          // Create data
-          if (isSale) {
-            await this.selectedSaleTicketsModel.create({
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              userId: user._id,
-              tickets: getTickets.map(({ _id }) => _id),
-            });
-          } else {
-            await this.selectedBuyTicketsModel.create({
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              userId: user._id,
-              tickets: getTickets.map(({ _id }) => _id),
-            });
-          }
+      if (!getSelectedTickets) {
+        // Create data
+        if (isSale) {
+          await this.selectedSaleTicketsModel.create({
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            userId: user._id,
+            tickets: getTickets.map(({ _id }) => _id),
+          });
         } else {
-          const filteredNotActiveTickets = getSelectedTickets.tickets.filter(
+          await this.selectedBuyTicketsModel.create({
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            (_id) => notActiveTicketsIds.includes(_id.toString()),
-          );
-          const filteredActiveTickets = getSelectedTickets.tickets.filter(
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            (_id) => notActiveTicketsIds.includes(_id.toString()),
-          );
-          const getUniqueActiveTickets = getTickets.filter(({ _id }) =>
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            filteredActiveTickets.findIndex((id) => id !== _id),
-          );
-          // Update data
-          if (isSale) {
-            if (filteredNotActiveTickets.length) {
-              await this.selectedSaleTicketsModel.updateOne(
-                {
-                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                  // @ts-ignore
-                  userId: user._id,
-                },
-                {
-                  $pull: {
-                    tickets: {
-                      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                      // @ts-ignore
-                      $in: filteredNotActiveTickets.map(({ _id }) => _id),
-                    },
-                  },
-                },
-              );
-            }
-            if (getUniqueActiveTickets.length) {
-              await this.selectedSaleTicketsModel.updateOne(
-                {
-                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                  // @ts-ignore
-                  userId: user._id,
-                },
-                {
-                  $push: {
+            userId: user._id,
+            tickets: getTickets.map(({ _id }) => _id),
+          });
+        }
+      } else {
+        const filteredNotActiveTickets = getSelectedTickets.tickets.filter(
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          (_id) => notActiveTicketsIds.includes(_id.toString()),
+        );
+        const filteredActiveTickets = getSelectedTickets.tickets.filter(
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          (_id) => notActiveTicketsIds.includes(_id.toString()),
+        );
+        const getUniqueActiveTickets = getTickets.filter(({ _id }) =>
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          filteredActiveTickets.findIndex((id) => id !== _id),
+        );
+        // Update data
+        if (isSale) {
+          if (filteredNotActiveTickets.length) {
+            await this.selectedSaleTicketsModel.updateOne(
+              {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                userId: user._id,
+              },
+              {
+                $pull: {
+                  tickets: {
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
-                    tickets: getUniqueActiveTickets.map(({ _id }) => _id),
+                    $in: filteredNotActiveTickets.map(({ _id }) => _id),
                   },
                 },
-              );
-            }
-          } else {
-            await this.selectedBuyTicketsModel.create({
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              userId: user._id,
-              tickets: getTickets.map(({ _id }) => _id),
-            });
+              },
+            );
+          }
+          if (getUniqueActiveTickets.length) {
+            await this.selectedSaleTicketsModel.updateOne(
+              {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                userId: user._id,
+              },
+              {
+                $push: {
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-ignore
+                  tickets: getUniqueActiveTickets.map(({ _id }) => _id),
+                },
+              },
+            );
+          }
+        } else {
+          if (filteredNotActiveTickets.length) {
+            await this.selectedBuyTicketsModel.updateOne(
+              {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                userId: user._id,
+              },
+              {
+                $pull: {
+                  tickets: {
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    $in: filteredNotActiveTickets.map(({ _id }) => _id),
+                  },
+                },
+              },
+            );
+          }
+          if (getUniqueActiveTickets.length) {
+            await this.selectedBuyTicketsModel.updateOne(
+              {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore
+                userId: user._id,
+              },
+              {
+                $push: {
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                  // @ts-ignore
+                  tickets: getUniqueActiveTickets.map(({ _id }) => _id),
+                },
+              },
+            );
           }
         }
       }

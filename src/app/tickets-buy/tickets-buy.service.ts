@@ -39,6 +39,7 @@ export class TicketsBuyService {
     sortBy = 'date',
     sortDesc = 'true',
     selected,
+    user,
   }: TicketsBuyDto & {
     user: User;
   }): Promise<GetTicketsInterface> {
@@ -75,21 +76,20 @@ export class TicketsBuyService {
                 ),
             )
           : getUsers;
-      const getSelectedTickets = selected
-        ? await this.selectedBuyTicketsModel.findOne({
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            userId: user._id,
-          })
-        : null;
+      const getSelectedTickets = await this.selectedBuyTicketsModel.findOne({
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        userId: user._id,
+      });
       const getTotalBuyTickets = await this.ticketModel.find(
         {
           sale: false,
-          ...(getSelectedTickets?.tickets?.length && {
-            _id: {
-              $in: getSelectedTickets.tickets,
-            },
-          }),
+          ...(getSelectedTickets?.tickets?.length &&
+            selected === 'true' && {
+              _id: {
+                $in: getSelectedTickets.tickets,
+              },
+            }),
           ...(active && {
             active: active === 'true',
           }),
@@ -154,6 +154,7 @@ export class TicketsBuyService {
             const { region, countryState, countryOtg, name, phone } = getUser;
             response.items.push({
               _id,
+              checked: getSelectedTickets?.tickets?.includes(_id),
               date: moment(createdAt).format('DD.MM.YYYY'),
               dateTime: moment(createdAt).format('HH:mm:ss'),
               type: culture,
