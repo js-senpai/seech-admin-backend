@@ -6,13 +6,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './app/auth/auth.module';
 import { UserModule } from './app/user/user.module';
 import { KpiModule } from './app/kpi/kpi.module';
-import { TicketsBuyService } from './app/tickets-buy/tickets-buy.service';
 import { TicketsBuyModule } from './app/tickets-buy/tickets-buy.module';
 import { TicketsSaleModule } from './app/tickets-sale/tickets-sale.module';
 import { KpiMonthlyModule } from './app/kpi-monthly/kpi-monthly.module';
-import path from 'path';
 import { I18nModule } from 'nestjs-i18n';
 import { PricesModule } from './app/prices/prices.module';
+import * as path from 'path';
 
 @Module({
   imports: [

@@ -44,6 +44,7 @@ export class KpiMonthlyService {
       const getPrevMonths = getAllMonths.slice(0, findCurrentMonth + 1);
       for (const month of getPrevMonths) {
         const getDate = moment(month, 'MMMM');
+        console.log(getDate);
         const getReviewsIds = await this.reviewOfServiceModel.find(
           {},
           {
