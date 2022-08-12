@@ -20,8 +20,4 @@ export default class PricesDto {
   @IsOptional()
   @IsString()
   otg: string;
-
-  @IsOptional()
-  @IsString()
-  lang: string;
 }

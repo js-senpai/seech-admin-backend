@@ -9,11 +9,8 @@ import { GetPricesInterface } from './prices.interfaces';
 export class PricesController {
   constructor(private readonly priceService: PricesService) {}
 
-  @Get(':lang')
-  async get(
-    @Param('lang') lang,
-    @Query() query: PricesDto,
-  ): Promise<GetPricesInterface> {
-    return this.priceService.get({ ...query, lang });
+  @Get()
+  async get(@Query() query: PricesDto): Promise<GetPricesInterface> {
+    return this.priceService.get({ ...query });
   }
 }

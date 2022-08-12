@@ -42,17 +42,38 @@ export class KpiMonthlyService {
         (item) => item === moment().format('MMMM'),
       );
       const getPrevMonths = getAllMonths.slice(0, findCurrentMonth + 1);
+      const getReviewsIds = await this.reviewOfServiceModel.find({}, null, {
+        sort: {
+          createdAt: -1,
+        },
+      });
+      const getUsers = await this.userModel.find(
+        {
+          ...(regions && {
+            region: {
+              $in: regions.split(','),
+            },
+          }),
+          ...(states && {
+            countryState: {
+              $in: states.split(','),
+            },
+          }),
+          ...(otg && {
+            countryOtg: {
+              $in: otg.split(','),
+            },
+          }),
+        },
+        null,
+        {
+          sort: {
+            createdAt: -1,
+          },
+        },
+      );
       for (const month of getPrevMonths) {
         const getDate = moment(month, 'MMMM');
-        console.log(getDate);
-        const getReviewsIds = await this.reviewOfServiceModel.find(
-          {},
-          {
-            sort: {
-              createdAt: -1,
-            },
-          },
-        );
         const filteredReviewsIds = getReviewsIds.filter(
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
@@ -66,7 +87,7 @@ export class KpiMonthlyService {
               {
                 $match: {
                   _id: {
-                    $in: getReviewsIds.map(({ _id }) => _id),
+                    $in: filteredReviewsIds.map(({ _id }) => _id),
                   },
                 },
               },
@@ -86,30 +107,6 @@ export class KpiMonthlyService {
         const { rate = 0 } = filteredReviewsIds.length
           ? getAvgReview[0]
           : { rate: 0 };
-        const getUsers = await this.userModel.find(
-          {
-            ...(regions && {
-              region: {
-                $in: regions.split(','),
-              },
-            }),
-            ...(states && {
-              countryState: {
-                $in: states.split(','),
-              },
-            }),
-            ...(otg && {
-              countryOtg: {
-                $in: otg.split(','),
-              },
-            }),
-          },
-          {
-            sort: {
-              createdAt: -1,
-            },
-          },
-        );
         const filteredUsers = getUsers.filter(
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
@@ -130,6 +127,7 @@ export class KpiMonthlyService {
               },
             }),
           },
+          null,
           {
             sort: {
               createdAt: -1,
@@ -156,6 +154,7 @@ export class KpiMonthlyService {
               },
             }),
           },
+          null,
           {
             sort: {
               createdAt: -1,
@@ -200,6 +199,7 @@ export class KpiMonthlyService {
                     },
                   }),
                 },
+                null,
                 {
                   sort: {
                     createdAt: -1,

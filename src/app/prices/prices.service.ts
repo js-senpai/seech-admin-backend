@@ -27,7 +27,6 @@ export class PricesService {
     regions = '',
     states = '',
     otg = '',
-    lang = 'ua',
   }: PricesDto): Promise<GetPricesInterface> {
     try {
       const response: GetPricesInterface = {
@@ -86,12 +85,11 @@ export class PricesService {
             )
           : getTotalSaleTickets;
       const getTicketsIds = filteredTotalSaleTickets.map(({ _id }) => _id);
-      const getProducts = await this.i18n.t('productsList', {
-        lang,
+      const getProducts = await this.i18n.translate('index.productsList', {
+        lang: 'ua',
       });
       if (getTicketsIds.length) {
-        const result = {};
-        for (const localeName of getProducts) {
+        for (const localeName of Object.keys(getProducts)) {
           if (typeof getProducts[localeName] === 'object') {
             for (const property in getProducts[localeName]) {
               const [value] = await this.ticketModel.aggregate([
@@ -121,6 +119,7 @@ export class PricesService {
               ]);
               response.items.push({
                 name: property,
+                title: getProducts[localeName][property],
                 value: (value?.avg || 0).toFixed(2),
               });
             }
