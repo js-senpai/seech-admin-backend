@@ -118,7 +118,7 @@ export class PricesService {
                 },
               ]);
               const findDuplicates = response.items.findIndex(
-                ({ name }) => name === property,
+                ({ title }) => title === getProducts[localeName][property],
               );
               if (findDuplicates === -1) {
                 response.items.push({
