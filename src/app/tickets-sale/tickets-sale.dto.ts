@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsOptional, IsString } from 'class-validator';
 
 export default class TicketsSaleDto {
   @IsOptional()
@@ -40,4 +40,8 @@ export default class TicketsSaleDto {
   @IsOptional()
   @IsString()
   sortDesc: string;
+
+  @IsOptional()
+  @IsBoolean()
+  selected: boolean;
 }

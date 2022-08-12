@@ -10,6 +10,10 @@ import { Ticket, TicketDocument } from '../../common/schemas/ticket.schema';
 import * as moment from 'moment/moment';
 import { GetTicketsInterface } from '../../common/interfaces/tickets.interfaces';
 import TicketsBuyDto from './tickets-buy.dto';
+import {
+  SelectedBuyTickets,
+  SelectedBuyTicketsDocument,
+} from '../../common/schemas/selectedBuyTickets.schema';
 
 @Injectable()
 export class TicketsBuyService {
@@ -19,6 +23,8 @@ export class TicketsBuyService {
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     @InjectModel(Ticket.name)
     private readonly ticketModel: Model<TicketDocument>,
+    @InjectModel(SelectedBuyTickets.name)
+    private readonly selectedBuyTicketsModel: Model<SelectedBuyTicketsDocument>,
   ) {}
 
   async get({
@@ -32,7 +38,10 @@ export class TicketsBuyService {
     active = '',
     sortBy = 'date',
     sortDesc = 'true',
-  }: TicketsBuyDto): Promise<GetTicketsInterface> {
+    selected,
+  }: TicketsBuyDto & {
+    user: User;
+  }): Promise<GetTicketsInterface> {
     try {
       const getUsers = await this.userModel.find({
         ...(regions && {
@@ -66,9 +75,21 @@ export class TicketsBuyService {
                 ),
             )
           : getUsers;
+      const getSelectedTickets = selected
+        ? await this.selectedBuyTicketsModel.findOne({
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            userId: user._id,
+          })
+        : null;
       const getTotalBuyTickets = await this.ticketModel.find(
         {
           sale: false,
+          ...(getSelectedTickets?.tickets?.length && {
+            _id: {
+              $in: getSelectedTickets.tickets,
+            },
+          }),
           ...(active && {
             active: active === 'true',
           }),
@@ -122,6 +143,7 @@ export class TicketsBuyService {
         active = false,
         description = '',
         weight,
+        _id,
         weightType = 'not set',
       } of filteredTotalBuyTickets) {
         if (createdAt) {
@@ -131,6 +153,7 @@ export class TicketsBuyService {
           if (getUser) {
             const { region, countryState, countryOtg, name, phone } = getUser;
             response.items.push({
+              _id,
               date: moment(createdAt).format('DD.MM.YYYY'),
               dateTime: moment(createdAt).format('HH:mm:ss'),
               type: culture,

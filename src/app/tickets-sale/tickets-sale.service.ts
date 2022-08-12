@@ -10,6 +10,10 @@ import { Ticket, TicketDocument } from '../../common/schemas/ticket.schema';
 import * as moment from 'moment';
 import { GetTicketsInterface } from '../../common/interfaces/tickets.interfaces';
 import TicketsSaleDto from './tickets-sale.dto';
+import {
+  SelectedSaleTickets,
+  SelectedSaleTicketsDocument,
+} from '../../common/schemas/selectedSaleTickets.schema';
 
 @Injectable()
 export class TicketsSaleService {
@@ -18,6 +22,8 @@ export class TicketsSaleService {
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     @InjectModel(Ticket.name)
     private readonly ticketModel: Model<TicketDocument>,
+    @InjectModel(SelectedSaleTickets.name)
+    private readonly selectedSaleTicketsModel: Model<SelectedSaleTicketsDocument>,
   ) {}
 
   async get({
@@ -31,7 +37,10 @@ export class TicketsSaleService {
     active = '',
     sortBy = 'date',
     sortDesc = 'true',
-  }: TicketsSaleDto): Promise<GetTicketsInterface> {
+    selected,
+  }: TicketsSaleDto & {
+    user: User;
+  }): Promise<GetTicketsInterface> {
     try {
       const getUsers = await this.userModel.find({
         ...(regions && {
@@ -65,9 +74,21 @@ export class TicketsSaleService {
                 ),
             )
           : getUsers;
+      const getSelectedTickets = selected
+        ? await this.selectedSaleTicketsModel.findOne({
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            userId: user._id,
+          })
+        : null;
       const getTotalSaleTickets = await this.ticketModel.find(
         {
           sale: true,
+          ...(getSelectedTickets?.tickets?.length && {
+            _id: {
+              $in: getSelectedTickets.tickets,
+            },
+          }),
           ...(active && {
             active: active === 'true',
           }),
@@ -123,6 +144,7 @@ export class TicketsSaleService {
         weight,
         price,
         weightType = 'not set',
+        _id,
       } of filteredTotalBuyTickets) {
         if (createdAt) {
           const getUser = await this.userModel.findOne({
@@ -131,6 +153,7 @@ export class TicketsSaleService {
           if (getUser) {
             const { region, countryState, countryOtg, name, phone } = getUser;
             response.items.push({
+              _id,
               date: moment(createdAt).format('DD.MM.YYYY'),
               dateTime: moment(createdAt).format('HH:mm:ss'),
               type: culture,

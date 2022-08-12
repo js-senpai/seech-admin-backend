@@ -1,5 +1,6 @@
 export interface GetTicketsInterface {
   items: {
+    _id: string;
     date: string;
     dateTime: string;
     type: string;

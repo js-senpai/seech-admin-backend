@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, Req, UseGuards } from '@nestjs/common';
 import { TicketsBuyService } from './tickets-buy.service';
 import { AuthGuard } from '@nestjs/passport';
 import { GetTicketsInterface } from '../../common/interfaces/tickets.interfaces';
@@ -10,7 +10,10 @@ export class TicketsBuyController {
   constructor(private readonly ticketsBuyService: TicketsBuyService) {}
 
   @Get()
-  async get(@Query() query: TicketsBuyDto): Promise<GetTicketsInterface> {
-    return await this.ticketsBuyService.get({ ...query });
+  async get(
+    @Query() query: TicketsBuyDto,
+    @Req() { user },
+  ): Promise<GetTicketsInterface> {
+    return await this.ticketsBuyService.get({ ...query, user });
   }
 }
