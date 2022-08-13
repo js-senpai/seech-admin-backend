@@ -1,12 +1,12 @@
-import { IsDateString, IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export default class PricesDto {
   @IsOptional()
-  @IsDateString()
+  @IsString()
   startDate: string;
 
   @IsOptional()
-  @IsDateString()
+  @IsString()
   endDate: string;
 
   @IsOptional()

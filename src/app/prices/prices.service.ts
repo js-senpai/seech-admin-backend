@@ -88,48 +88,47 @@ export class PricesService {
       const getProducts = await this.i18n.translate('index.productsList', {
         lang: 'ua',
       });
-      if (getTicketsIds.length) {
-        for (const localeName of Object.keys(getProducts)) {
-          if (typeof getProducts[localeName] === 'object') {
-            for (const property in getProducts[localeName]) {
-              const [value] = await this.ticketModel.aggregate([
-                {
-                  $match: {
-                    sale: true,
-                    culture: {
-                      $in: [
-                        getProducts[localeName][property],
-                        getProducts[localeName][property].replace(
-                          /[^a-zа-яё]/gi,
-                          '',
-                        ),
-                      ],
-                    },
-                    _id: {
-                      $in: getTicketsIds,
+      for (const localeName of Object.keys(getProducts)) {
+        const result = {
+          name: localeName,
+          list: [],
+        };
+        if (typeof getProducts[localeName] === 'object') {
+          for (const property in getProducts[localeName]) {
+            const [value] = getTicketsIds.length
+              ? await this.ticketModel.aggregate([
+                  {
+                    $match: {
+                      sale: true,
+                      culture: {
+                        $in: [
+                          getProducts[localeName][property],
+                          getProducts[localeName][property].replace(
+                            /[^a-zа-яё]/gi,
+                            '',
+                          ),
+                        ],
+                      },
+                      _id: {
+                        $in: getTicketsIds,
+                      },
                     },
                   },
-                },
-                {
-                  $group: {
-                    _id: 'authorId',
-                    avg: { $avg: '$price' },
+                  {
+                    $group: {
+                      _id: 'authorId',
+                      avg: { $avg: '$price' },
+                    },
                   },
-                },
-              ]);
-              const findDuplicates = response.items.findIndex(
-                ({ title }) => title === getProducts[localeName][property],
-              );
-              if (findDuplicates === -1) {
-                response.items.push({
-                  name: property,
-                  title: getProducts[localeName][property],
-                  value: (value?.avg || 0).toFixed(2),
-                });
-              }
-            }
+                ])
+              : [{ avg: 0 }];
+            result.list.push({
+              name: property,
+              value: (value?.avg || 0).toFixed(2),
+            });
           }
         }
+        response.items.push(result);
       }
       return response;
     } catch (e) {
