@@ -89,9 +89,6 @@ export class TicketsSaleService {
                 $in: getSelectedTickets.tickets,
               },
             }),
-          ...(active && {
-            active: active === 'true',
-          }),
           authorId: {
             $in: filteredUsers.map(({ userId }) => userId),
           },
@@ -115,7 +112,7 @@ export class TicketsSaleService {
             }
           : null,
       );
-      const filteredTotalBuyTickets =
+      const filteredTotalBuyTickets = (
         startDate && endDate
           ? getTotalSaleTickets.filter(
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -129,7 +126,14 @@ export class TicketsSaleService {
                   '[]',
                 ),
             )
-          : getTotalSaleTickets;
+          : getTotalSaleTickets
+      ).filter(({ date }) =>
+        active === 'true'
+          ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            Date.now() - date <= 24 * 60 * 60 * 1000
+          : true,
+      );
       const response: GetTicketsInterface = {
         items: [],
       };

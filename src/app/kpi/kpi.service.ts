@@ -107,9 +107,6 @@ export class KpiService {
           : getUsers;
       const getTotalBuyTickets = await this.ticketModel.find({
         sale: false,
-        ...(active && {
-          active: active === 'true',
-        }),
         authorId: {
           $in: filteredUsers.map(({ userId }) => userId),
         },
@@ -119,7 +116,7 @@ export class KpiService {
           },
         }),
       });
-      const filteredTotalBuyTickets =
+      const filteredTotalBuyTickets = (
         startDate && endDate
           ? getTotalBuyTickets.filter(
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -133,12 +130,16 @@ export class KpiService {
                   '[]',
                 ),
             )
-          : getTotalBuyTickets;
+          : getTotalBuyTickets
+      ).filter(({ date }) =>
+        active === 'true'
+          ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            Date.now() - date <= 24 * 60 * 60 * 1000
+          : true,
+      );
       const getTotalSaleTickets = await this.ticketModel.find({
         sale: true,
-        ...(active && {
-          active: active === 'true',
-        }),
         authorId: {
           $in: filteredUsers.map(({ userId }) => userId),
         },
@@ -148,7 +149,7 @@ export class KpiService {
           },
         }),
       });
-      const filteredTotalSaleTickets =
+      const filteredTotalSaleTickets = (
         startDate && endDate
           ? getTotalSaleTickets.filter(
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -162,7 +163,14 @@ export class KpiService {
                   '[]',
                 ),
             )
-          : getTotalSaleTickets;
+          : getTotalSaleTickets
+      ).filter(({ date }) =>
+        active === 'true'
+          ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            Date.now() - date <= 24 * 60 * 60 * 1000
+          : true,
+      );
       const getActiveUsers =
         filteredTotalBuyTickets.length && filteredTotalSaleTickets.length
           ? await this.userModel.find({
