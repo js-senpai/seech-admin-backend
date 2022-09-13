@@ -31,6 +31,9 @@ export class Ticket {
   culture: string;
 
   @Prop({ type: String })
+  photoUrl: string;
+
+  @Prop({ type: String })
   photo: string;
 
   @Prop({ type: Date })
