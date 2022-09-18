@@ -60,12 +60,8 @@ export class SellProductsService {
                 if (a?.countryState === user?.countryState) {
                   if (a?.countryOtg === user?.countryOtg) {
                     return 1;
-                  } else {
-                    return -1;
                   }
                   return 1;
-                } else {
-                  return -1;
                 }
                 return 1;
               }
