@@ -55,18 +55,13 @@ export class SellProductsService {
       });
       const filteredUsers =
         !regions && !states && !otg
-          ? getUsers.sort((a) => {
-              if (a?.region === user?.region) {
-                if (a?.countryState === user?.countryState) {
-                  if (a?.countryOtg === user?.countryOtg) {
-                    return 1;
-                  }
-                  return 1;
-                }
-                return 1;
-              }
-              return 0;
-            })
+          ? getUsers.sort((a) =>
+              a?.region === user?.region ||
+              a?.countryState === user?.countryState ||
+              a?.countryOtg === user?.countryOtg
+                ? 1
+                : -1,
+            )
           : getUsers;
       const getTotalBuyTickets = await this.ticketModel.find(
         {
