@@ -70,8 +70,8 @@ export class TicketsSaleService {
       const getTotalSaleTickets = await this.ticketModel.find(
         {
           sale: true,
-          ...(active === 'true' && {
-            active: true,
+          ...(active && {
+            active: active === 'true',
           }),
           ...(getSelectedTickets?.tickets?.length &&
             selected === 'true' && {
