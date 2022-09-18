@@ -70,6 +70,9 @@ export class TicketsSaleService {
       const getTotalSaleTickets = await this.ticketModel.find(
         {
           sale: true,
+          ...(active === 'true' && {
+            active: true,
+          }),
           ...(getSelectedTickets?.tickets?.length &&
             selected === 'true' && {
               _id: {
