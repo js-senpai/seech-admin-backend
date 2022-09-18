@@ -56,6 +56,7 @@ export class SellProductsService {
       const getTotalBuyTickets = await this.ticketModel.find(
         {
           sale: true,
+          active: true,
           authorId: {
             $in: getUsers.map(({ userId }) => userId),
           },
