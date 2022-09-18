@@ -63,21 +63,6 @@ export class TicketsBuyService {
           },
         }),
       });
-      const filteredUsers =
-        startDate && endDate
-          ? getUsers.filter(
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              ({ createdAt }) =>
-                createdAt &&
-                moment(createdAt).isBetween(
-                  moment(startDate, 'DD-MM-YYYY'),
-                  moment(endDate, 'DD-MM-YYYY'),
-                  'day',
-                  '[]',
-                ),
-            )
-          : getUsers;
       const getSelectedTickets = await this.selectedBuyTicketsModel.findOne({
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
@@ -93,7 +78,7 @@ export class TicketsBuyService {
               },
             }),
           authorId: {
-            $in: filteredUsers.map(({ userId }) => userId),
+            $in: getUsers.map(({ userId }) => userId),
           },
           ...((types || subtypes) && {
             culture: {
