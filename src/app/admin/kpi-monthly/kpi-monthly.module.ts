@@ -2,13 +2,13 @@ import { Module } from '@nestjs/common';
 import { KpiMonthlyController } from './kpi-monthly.controller';
 import { KpiMonthlyService } from './kpi-monthly.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from '../../common/schemas/users.schema';
-import { Ticket, TicketSchema } from '../../common/schemas/ticket.schema';
+import { User, UserSchema } from '../../../common/schemas/users.schema';
+import { Ticket, TicketSchema } from '../../../common/schemas/ticket.schema';
 import {
   ReviewOfService,
   ReviewOfServiceSchema,
-} from '../../common/schemas/reviewOfService.schema';
-import { AuthModule } from '../auth/auth.module';
+} from '../../../common/schemas/reviewOfService.schema';
+import { AuthModule } from '../../auth/auth.module';
 
 @Module({
   imports: [

@@ -6,11 +6,12 @@ import {
 import { GetPricesInterface } from './prices.interfaces';
 import PricesDto from './prices.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from '../../common/schemas/users.schema';
+import { User, UserDocument } from '../../../common/schemas/users.schema';
 import { Model } from 'mongoose';
-import { Ticket, TicketDocument } from '../../common/schemas/ticket.schema';
+import { Ticket, TicketDocument } from '../../../common/schemas/ticket.schema';
 import * as moment from 'moment/moment';
 import { I18nService } from 'nestjs-i18n';
+import { RoleDecorator } from '../../../common/decorators/role.decorator';
 
 @Injectable()
 export class PricesService {
@@ -21,13 +22,17 @@ export class PricesService {
     private readonly ticketModel: Model<TicketDocument>,
     private readonly i18n: I18nService,
   ) {}
+
+  @RoleDecorator(['admin', 'moderator'])
   async get({
     startDate = '',
     endDate = '',
     regions = '',
     states = '',
     otg = '',
-  }: PricesDto): Promise<GetPricesInterface> {
+  }: PricesDto & {
+    user: User;
+  }): Promise<GetPricesInterface> {
     try {
       const response: GetPricesInterface = {
         items: [],

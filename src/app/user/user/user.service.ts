@@ -4,7 +4,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from '../../common/schemas/users.schema';
+import { User, UserDocument } from '../../../common/schemas/users.schema';
 import { Model } from 'mongoose';
 
 @Injectable()

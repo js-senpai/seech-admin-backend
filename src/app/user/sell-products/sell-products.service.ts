@@ -4,29 +4,25 @@ import {
   Logger,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from '../../common/schemas/users.schema';
+import { User, UserDocument } from '../../../common/schemas/users.schema';
 import { Model } from 'mongoose';
-import { Ticket, TicketDocument } from '../../common/schemas/ticket.schema';
-import * as moment from 'moment/moment';
-import { GetTicketsInterface } from '../../common/interfaces/tickets.interfaces';
-import TicketsBuyDto from './tickets-buy.dto';
-import {
-  SelectedBuyTickets,
-  SelectedBuyTicketsDocument,
-} from '../../common/schemas/selectedBuyTickets.schema';
+import { Ticket, TicketDocument } from '../../../common/schemas/ticket.schema';
+import * as moment from 'moment';
+import SellProductsDto from './sell-products.dto';
+import { GetProductsInterface } from '../../../common/interfaces/products.interfaces';
+import { RoleDecorator } from '../../../common/decorators/role.decorator';
 
 @Injectable()
-export class TicketsBuyService {
-  private readonly logger = new Logger(TicketsBuyService.name);
+export class SellProductsService {
+  private readonly logger = new Logger(SellProductsService.name);
 
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     @InjectModel(Ticket.name)
     private readonly ticketModel: Model<TicketDocument>,
-    @InjectModel(SelectedBuyTickets.name)
-    private readonly selectedBuyTicketsModel: Model<SelectedBuyTicketsDocument>,
   ) {}
 
+  @RoleDecorator(['user'])
   async get({
     startDate = '',
     endDate = '',
@@ -35,14 +31,10 @@ export class TicketsBuyService {
     otg = '',
     types = '',
     subtypes = '',
-    active = '',
-    sortBy = 'date',
-    sortDesc = 'true',
-    selected,
     user,
-  }: TicketsBuyDto & {
+  }: SellProductsDto & {
     user: User;
-  }): Promise<GetTicketsInterface> {
+  }): Promise<GetProductsInterface> {
     try {
       const getUsers = await this.userModel.find({
         ...(regions && {
@@ -76,20 +68,9 @@ export class TicketsBuyService {
                 ),
             )
           : getUsers;
-      const getSelectedTickets = await this.selectedBuyTicketsModel.findOne({
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        userId: user._id,
-      });
       const getTotalBuyTickets = await this.ticketModel.find(
         {
-          sale: false,
-          ...(getSelectedTickets?.tickets?.length &&
-            selected === 'true' && {
-              _id: {
-                $in: getSelectedTickets.tickets,
-              },
-            }),
+          sale: true,
           authorId: {
             $in: filteredUsers.map(({ userId }) => userId),
           },
@@ -100,18 +81,9 @@ export class TicketsBuyService {
           }),
         },
         null,
-        sortBy
-          ? {
-              sort: {
-                ...(sortBy === 'date' && {
-                  createdAt: sortDesc === 'true' ? -1 : 1,
-                }),
-                ...(sortBy === 'col' && {
-                  weight: sortDesc === 'true' ? -1 : 1,
-                }),
-              },
-            }
-          : null,
+        {
+          createdAt: -1,
+        },
       );
       const filteredTotalBuyTickets = (
         startDate && endDate
@@ -128,14 +100,13 @@ export class TicketsBuyService {
                 ),
             )
           : getTotalBuyTickets
-      ).filter(({ date }) =>
-        active === 'true'
-          ? // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            Date.now() - date <= 24 * 60 * 60 * 1000
-          : true,
+      ).filter(
+        ({ date }) =>
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          Date.now() - date <= 24 * 60 * 60 * 1000,
       );
-      const response: GetTicketsInterface = {
+      const response: GetProductsInterface = {
         items: [],
       };
       for (const {
@@ -144,11 +115,12 @@ export class TicketsBuyService {
         // @ts-ignore
         createdAt,
         culture,
-        active = false,
         description = '',
         weight,
         _id,
         weightType = 'not set',
+        photoUrl,
+        price,
       } of filteredTotalBuyTickets) {
         if (createdAt) {
           const getUser = await this.userModel.findOne({
@@ -158,28 +130,28 @@ export class TicketsBuyService {
             const { region, countryState, countryOtg, name, phone } = getUser;
             response.items.push({
               _id,
-              checked: getSelectedTickets?.tickets?.includes(_id),
-              date: moment(createdAt).format('DD.MM.YYYY'),
-              dateTime: moment(createdAt).format('HH:mm:ss'),
-              type: culture,
-              col: weight,
+              img: photoUrl,
+              createdAt,
+              title: culture,
+              weight,
               weightType,
-              active,
               region,
               state: countryState,
               otg: countryOtg,
-              name,
+              author: name,
               phone,
               description,
+              price,
+              ownTicket: authorId === user.userId,
             });
           }
         }
       }
       return response;
     } catch (e) {
-      this.logger.error(`Error in get tickets buy statistic method.  ${e}`);
+      this.logger.error(`Error in get buy products method.  ${e}`);
       throw new InternalServerErrorException(
-        `Error in get tickets buy statistic method.  ${e}`,
+        `Error in get buy products method.  ${e}`,
       );
     }
   }

@@ -8,14 +8,15 @@ import { Model } from 'mongoose';
 import {
   SelectedSaleTickets,
   SelectedSaleTicketsDocument,
-} from '../../common/schemas/selectedSaleTickets.schema';
+} from '../../../common/schemas/selectedSaleTickets.schema';
 import {
   SelectedBuyTickets,
   SelectedBuyTicketsDocument,
-} from '../../common/schemas/selectedBuyTickets.schema';
-import { User, UserDocument } from '../../common/schemas/users.schema';
-import { Ticket, TicketDocument } from '../../common/schemas/ticket.schema';
+} from '../../../common/schemas/selectedBuyTickets.schema';
+import { User, UserDocument } from '../../../common/schemas/users.schema';
+import { Ticket, TicketDocument } from '../../../common/schemas/ticket.schema';
 import SelectedTicketsDto from './selected-tickets.dto';
+import { RoleDecorator } from '../../../common/decorators/role.decorator';
 
 @Injectable()
 export class SelectedTicketsService {
@@ -31,6 +32,7 @@ export class SelectedTicketsService {
     private readonly ticketModel: Model<TicketDocument>,
   ) {}
 
+  @RoleDecorator(['admin', 'moderator'])
   async update({
     tickets = [],
     isSale = false,

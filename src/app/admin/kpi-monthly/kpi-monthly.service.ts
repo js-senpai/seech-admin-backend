@@ -4,16 +4,17 @@ import {
   Logger,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from '../../common/schemas/users.schema';
+import { User, UserDocument } from '../../../common/schemas/users.schema';
 import { Model } from 'mongoose';
-import { Ticket, TicketDocument } from '../../common/schemas/ticket.schema';
+import { Ticket, TicketDocument } from '../../../common/schemas/ticket.schema';
 import {
   ReviewOfService,
   ReviewOfServiceDocument,
-} from '../../common/schemas/reviewOfService.schema';
+} from '../../../common/schemas/reviewOfService.schema';
 import * as moment from 'moment/moment';
 import { GetKpiMonthlyStatisticInterface } from './kpi-monthly.interfaces';
 import KpiMonthlyDto from './kpi-monthly.dto';
+import { RoleDecorator } from '../../../common/decorators/role.decorator';
 
 @Injectable()
 export class KpiMonthlyService {
@@ -26,13 +27,16 @@ export class KpiMonthlyService {
     private readonly reviewOfServiceModel: Model<ReviewOfServiceDocument>,
   ) {}
 
+  @RoleDecorator(['admin', 'moderator'])
   async get({
     regions = '',
     states = '',
     otg = '',
     types = '',
     subtypes = '',
-  }: KpiMonthlyDto): Promise<GetKpiMonthlyStatisticInterface> {
+  }: KpiMonthlyDto & {
+    user: User;
+  }): Promise<GetKpiMonthlyStatisticInterface> {
     try {
       const response: GetKpiMonthlyStatisticInterface = {
         items: [],

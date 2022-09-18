@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { KpiMonthlyService } from './kpi-monthly.service';
 import KpiMonthlyDto from './kpi-monthly.dto';
@@ -12,7 +12,8 @@ export class KpiMonthlyController {
   @Get()
   async get(
     @Query() query: KpiMonthlyDto,
+    @Req() { user },
   ): Promise<GetKpiMonthlyStatisticInterface> {
-    return await this.kpiMonthlyService.get({ ...query });
+    return await this.kpiMonthlyService.get({ user, ...query });
   }
 }

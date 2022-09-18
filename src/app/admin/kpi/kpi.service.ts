@@ -4,16 +4,17 @@ import {
   Logger,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from '../../common/schemas/users.schema';
+import { User, UserDocument } from '../../../common/schemas/users.schema';
 import { Model } from 'mongoose';
 import {
   ReviewOfService,
   ReviewOfServiceDocument,
-} from '../../common/schemas/reviewOfService.schema';
-import { Ticket, TicketDocument } from '../../common/schemas/ticket.schema';
+} from '../../../common/schemas/reviewOfService.schema';
+import { Ticket, TicketDocument } from '../../../common/schemas/ticket.schema';
 import { GetKpiStatisticInterface } from './kpi.interfaces';
 import * as moment from 'moment';
 import KpiDto from './kpi.dto';
+import { RoleDecorator } from '../../../common/decorators/role.decorator';
 
 @Injectable()
 export class KpiService {
@@ -26,6 +27,7 @@ export class KpiService {
     private readonly reviewOfServiceModel: Model<ReviewOfServiceDocument>,
   ) {}
 
+  @RoleDecorator(['admin', 'moderator'])
   async get({
     startDate = '',
     endDate = '',
@@ -35,7 +37,9 @@ export class KpiService {
     types = '',
     subtypes = '',
     active = '',
-  }: KpiDto): Promise<GetKpiStatisticInterface> {
+  }: KpiDto & {
+    user: User;
+  }): Promise<GetKpiStatisticInterface> {
     try {
       const getReviewsIds = await this.reviewOfServiceModel.find();
       const filteredReviewsIds =

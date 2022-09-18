@@ -4,16 +4,17 @@ import {
   Logger,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UserDocument } from '../../common/schemas/users.schema';
+import { User, UserDocument } from '../../../common/schemas/users.schema';
 import { Model } from 'mongoose';
-import { Ticket, TicketDocument } from '../../common/schemas/ticket.schema';
+import { Ticket, TicketDocument } from '../../../common/schemas/ticket.schema';
 import * as moment from 'moment';
-import { GetTicketsInterface } from '../../common/interfaces/tickets.interfaces';
+import { GetTicketsInterface } from '../../../common/interfaces/tickets.interfaces';
 import TicketsSaleDto from './tickets-sale.dto';
 import {
   SelectedSaleTickets,
   SelectedSaleTicketsDocument,
-} from '../../common/schemas/selectedSaleTickets.schema';
+} from '../../../common/schemas/selectedSaleTickets.schema';
+import { RoleDecorator } from '../../../common/decorators/role.decorator';
 
 @Injectable()
 export class TicketsSaleService {
@@ -26,6 +27,7 @@ export class TicketsSaleService {
     private readonly selectedSaleTicketsModel: Model<SelectedSaleTicketsDocument>,
   ) {}
 
+  @RoleDecorator(['admin', 'moderator'])
   async get({
     startDate = '',
     endDate = '',
