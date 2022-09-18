@@ -63,12 +63,13 @@ export class SellProductsService {
                   } else {
                     return -1;
                   }
+                  return 1;
                 } else {
                   return -1;
                 }
-              } else {
-                return -1;
+                return 1;
               }
+              return 0;
             })
           : getUsers;
       const getTotalBuyTickets = await this.ticketModel.find(
