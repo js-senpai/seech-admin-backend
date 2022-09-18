@@ -53,21 +53,11 @@ export class SellProductsService {
           },
         }),
       });
-      const filteredUsers =
-        !regions && !states && !otg
-          ? getUsers.sort((a) =>
-              a?.region === user?.region ||
-              a?.countryState === user?.countryState ||
-              a?.countryOtg === user?.countryOtg
-                ? 1
-                : -1,
-            )
-          : getUsers;
       const getTotalBuyTickets = await this.ticketModel.find(
         {
           sale: true,
           authorId: {
-            $in: filteredUsers.map(({ userId }) => userId),
+            $in: getUsers.map(({ userId }) => userId),
           },
           ...((types || subtypes) && {
             culture: {
