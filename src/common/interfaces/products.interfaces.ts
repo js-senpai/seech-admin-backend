@@ -3,7 +3,7 @@ export interface GetProductsInterface {
     _id: string;
     title: string;
     img?: string;
-    createdAt: string;
+    updatedAt: string;
     price: number;
     weight: number;
     weightType: string;

@@ -100,6 +100,9 @@ export class SellProductsService {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         createdAt,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        updatedAt,
         culture,
         description = '',
         weight,
@@ -117,7 +120,7 @@ export class SellProductsService {
             response.items.push({
               _id,
               img: photoUrl,
-              createdAt,
+              updatedAt,
               title: culture,
               weight,
               weightType,
