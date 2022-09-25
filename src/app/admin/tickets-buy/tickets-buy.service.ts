@@ -15,6 +15,7 @@ import {
   SelectedBuyTicketsDocument,
 } from '../../../common/schemas/selectedBuyTickets.schema';
 import { RoleDecorator } from '../../../common/decorators/role.decorator';
+import { I18nService } from 'nestjs-i18n';
 
 @Injectable()
 export class TicketsBuyService {
@@ -26,6 +27,7 @@ export class TicketsBuyService {
     private readonly ticketModel: Model<TicketDocument>,
     @InjectModel(SelectedBuyTickets.name)
     private readonly selectedBuyTicketsModel: Model<SelectedBuyTicketsDocument>,
+    private readonly i18n: I18nService,
   ) {}
 
   @RoleDecorator(['admin', 'moderator'])
@@ -68,6 +70,13 @@ export class TicketsBuyService {
         // @ts-ignore
         userId: user._id,
       });
+      const typesList = types.split(',').flatMap((name) =>
+        Object.values(
+          this.i18n.translate(`index.productsList.${name}List`, {
+            lang: 'ua',
+          }),
+        ),
+      );
       const getTotalBuyTickets = await this.ticketModel.find(
         {
           sale: false,
@@ -85,7 +94,7 @@ export class TicketsBuyService {
           },
           ...((types || subtypes) && {
             culture: {
-              $in: [...types.split(','), ...subtypes.split(',')],
+              $in: [...typesList, ...subtypes.split(',')],
             },
           }),
         },

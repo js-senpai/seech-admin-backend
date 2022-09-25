@@ -11,6 +11,7 @@ import * as moment from 'moment';
 import SellProductsDto from './sell-products.dto';
 import { GetProductsInterface } from '../../../common/interfaces/products.interfaces';
 import { RoleDecorator } from '../../../common/decorators/role.decorator';
+import { I18nService } from 'nestjs-i18n';
 
 @Injectable()
 export class SellProductsService {
@@ -20,6 +21,7 @@ export class SellProductsService {
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
     @InjectModel(Ticket.name)
     private readonly ticketModel: Model<TicketDocument>,
+    private readonly i18n: I18nService,
   ) {}
 
   @RoleDecorator(['user'])
@@ -53,6 +55,13 @@ export class SellProductsService {
           },
         }),
       });
+      const typesList = types.split(',').flatMap((name) =>
+        Object.values(
+          this.i18n.translate(`index.productsList.${name}List`, {
+            lang: 'ua',
+          }),
+        ),
+      );
       const getTotalBuyTickets = await this.ticketModel.find(
         {
           sale: true,
@@ -62,7 +71,7 @@ export class SellProductsService {
           },
           ...((types || subtypes) && {
             culture: {
-              $in: [...types.split(','), ...subtypes.split(',')],
+              $in: [...typesList, ...subtypes.split(',')],
             },
           }),
         },
