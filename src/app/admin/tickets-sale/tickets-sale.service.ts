@@ -27,7 +27,6 @@ export class TicketsSaleService {
     @InjectModel(SelectedSaleTickets.name)
     private readonly selectedSaleTicketsModel: Model<SelectedSaleTicketsDocument>,
     private readonly i18n: I18nService,
-    f,
   ) {}
 
   @RoleDecorator(['admin', 'moderator'])
