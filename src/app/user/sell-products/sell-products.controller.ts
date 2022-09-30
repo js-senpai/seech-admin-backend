@@ -7,13 +7,13 @@ import { AuthGuard } from '@nestjs/passport';
 @Controller('sell-products')
 @UseGuards(AuthGuard())
 export class SellProductsController {
-  constructor(private readonly buyProductsService: SellProductsService) {}
+  constructor(private readonly sellProductsService: SellProductsService) {}
 
   @Get()
   async get(
     @Query() query: SellProductsDto,
     @Req() { user },
   ): Promise<GetProductsInterface> {
-    return await this.buyProductsService.get({ ...query, user });
+    return await this.sellProductsService.get({ ...query, user });
   }
 }

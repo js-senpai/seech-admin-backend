@@ -14,6 +14,7 @@ import { PricesModule } from './app/admin/prices/prices.module';
 import * as path from 'path';
 import { SelectedTicketsModule } from './app/admin/selected-tickets/selected-tickets.module';
 import { SellProductsModule } from './app/user/sell-products/sell-products.module';
+import { BuyProductsModule } from './app/user/buy-products/buy-products.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { SellProductsModule } from './app/user/sell-products/sell-products.modul
     PricesModule,
     SelectedTicketsModule,
     SellProductsModule,
+    BuyProductsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

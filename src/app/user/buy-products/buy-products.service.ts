@@ -7,15 +7,15 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from '../../../common/schemas/users.schema';
 import { Model } from 'mongoose';
 import { Ticket, TicketDocument } from '../../../common/schemas/ticket.schema';
-import * as moment from 'moment';
-import SellProductsDto from './sell-products.dto';
-import { GetProductsInterface } from '../../../common/interfaces/products.interfaces';
-import { RoleDecorator } from '../../../common/decorators/role.decorator';
 import { I18nService } from 'nestjs-i18n';
+import { RoleDecorator } from '../../../common/decorators/role.decorator';
+import SellProductsDto from '../sell-products/sell-products.dto';
+import { GetProductsInterface } from '../../../common/interfaces/products.interfaces';
+import * as moment from 'moment/moment';
 
 @Injectable()
-export class SellProductsService {
-  private readonly logger = new Logger(SellProductsService.name);
+export class BuyProductsService {
+  private readonly logger = new Logger(BuyProductsService.name);
 
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
@@ -64,7 +64,7 @@ export class SellProductsService {
       );
       const getTotalBuyTickets = await this.ticketModel.find(
         {
-          sale: true,
+          sale: false,
           active: true,
           authorId: {
             $in: getUsers.map(({ userId }) => userId),
@@ -147,9 +147,9 @@ export class SellProductsService {
       }
       return response;
     } catch (e) {
-      this.logger.error(`Error in get sell products method.  ${e}`);
+      this.logger.error(`Error in get buy products method.  ${e}`);
       throw new InternalServerErrorException(
-        `Error in get sell products method.  ${e}`,
+        `Error in get buy products method.  ${e}`,
       );
     }
   }
