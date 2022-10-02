@@ -7,7 +7,7 @@ import {
   Min,
 } from 'class-validator';
 
-export class SellProductsDto {
+export default class BuyProductsDto {
   @IsOptional()
   @IsString()
   startDate: string;
@@ -37,7 +37,7 @@ export class SellProductsDto {
   subtypes: string;
 }
 
-export class CreateSellProductsDto {
+export class CreateBuyProductsDto {
   @IsNotEmpty()
   @IsString()
   type: string;
@@ -57,19 +57,9 @@ export class CreateSellProductsDto {
   @IsNotEmpty()
   @IsNumber()
   @Min(1)
-  price: number;
-
-  @IsNotEmpty()
-  @IsNumber()
-  @Min(1)
   weight: number;
 
   @IsString()
   @IsOptional()
   description: string;
-
-  @IsNotEmpty()
-  @IsUrl()
-  @IsString()
-  photoUrl: string;
 }

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { BuyProductsService } from './buy-products.service';
-import { BuyProductsController } from './buy-products.controller';
+import { BasketService } from './basket.service';
+import { BasketController } from './basket.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from '../../../common/schemas/users.schema';
 import { Ticket, TicketSchema } from '../../../common/schemas/ticket.schema';
@@ -14,7 +14,7 @@ import { AuthModule } from '../../auth/auth.module';
     ]),
     AuthModule,
   ],
-  providers: [BuyProductsService],
-  controllers: [BuyProductsController],
+  providers: [BasketService],
+  controllers: [BasketController],
 })
-export class BuyProductsModule {}
+export class BasketModule {}

@@ -15,6 +15,9 @@ import * as path from 'path';
 import { SelectedTicketsModule } from './app/admin/selected-tickets/selected-tickets.module';
 import { SellProductsModule } from './app/user/sell-products/sell-products.module';
 import { BuyProductsModule } from './app/user/buy-products/buy-products.module';
+import { TicketImageModule } from './app/ticket-image/ticket-image.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { BasketModule } from './app/user/basket/basket.module';
 
 @Module({
   imports: [
@@ -28,6 +31,7 @@ import { BuyProductsModule } from './app/user/buy-products/buy-products.module';
       }),
       inject: [ConfigService],
     }),
+    ScheduleModule.forRoot(),
     // i18n
     I18nModule.forRoot({
       fallbackLanguage: 'ua',
@@ -49,6 +53,8 @@ import { BuyProductsModule } from './app/user/buy-products/buy-products.module';
     SelectedTicketsModule,
     SellProductsModule,
     BuyProductsModule,
+    TicketImageModule,
+    BasketModule,
   ],
   controllers: [AppController],
   providers: [AppService],

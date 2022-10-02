@@ -59,5 +59,27 @@
   "honey": "\uD83C\uDF6F Мед",
   "walnuts": "\uD83E\uDD5C Горіхи",
   "milks": "\uD83E\uDD5B Молоко",
-  "other": "Інше"
+  "other": "Інше",
+  "types": {
+    "weight": "Вага",
+    "weightValue": "кг",
+    "weightTonValue": "т",
+    "volume": "Обсяг",
+    "volumeValue": "л",
+    "amount": "Кількість",
+    "amountValue": "шт"
+  },
+  "telegram": {
+    "schedule": {
+      "extend": "Ваш товар деактивовано. Виберіть дію:",
+      "buyingTicket": "<b>ХОЧУ КУПИТИ</b>\nПродукт: ${culture}\nАктивний: ${active}\n${weightName}: ${weight} ${weightValue}\nДата: ${date}\nНомер зв'язку: ${phone}, ${name}\nОбласть: ${region}\nОТГ: ${otg}\nКомментар: ${description}\n\n<a href=\"tg://user?id=${userId}\">ЗВ'ЯЗАТИСЯ В TELEGRAM</a>",
+      "sellingTicket": "<b>ПРОДАМ</b>\nПродукт: ${culture}\nАктивний: ${active}\nЦіна: <b>${price}₴/${weightValue}</b>\n${weightName}: ${weight} ${weightValue}\nДата: ${date}\nОпис: ${description} \nНомер зв'язку: ${phone}, ${name}\nОбласть: ${region}\nОТГ: ${otg}\nРейтинг: ${stars} (${votes})\n\n<a href=\"tg://user?id=${userId}\">ЗВ'ЯЗАТИСЯ В TELEGRAM</a>",
+      "buyingTicketOwn": "<b>ХОЧУ КУПИТИ</b>\nПродукт: ${culture}\nАктивний: ${active}\n${weightName}: ${weight} ${weightValue}\nДата: ${date}",
+      "sellingTicketOwn": "<b>ПРОДАМ</b>\nПродукт: ${culture}\nАктивний: ${active}\nЦіна: <b>${price}₴/${weightValue}</b>\n${weightName}: ${weight} ${weightValue}\nДата: ${date}\nОпис: ${description}"
+    },
+    "buttons": {
+      "remove": "Видалити 🔴",
+      "completed": "Виконано 🟢"
+    }
+  }
 }
