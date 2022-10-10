@@ -35,7 +35,7 @@ export class BasketService {
       if (!getTicket) {
         throw new NotFoundException(`Ticket with id ${ticketId} not found!`);
       }
-      if (getTicket.authorId === user.userId) {
+      if (getTicket.authorId.toString() === user.userId.toString()) {
         throw new ForbiddenException('You cant add own ticket to basket!');
       }
       if (user.basket.findIndex(({ id }) => ticketId === id) !== -1) {

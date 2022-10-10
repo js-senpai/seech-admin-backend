@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Post,
   Req,
   UseGuards,
@@ -30,11 +31,11 @@ export class BasketController {
     return await this.basketService.getTotal({ user });
   }
 
-  @Delete()
+  @Delete(':id')
   async removeFromBasket(
-    @Body() data: BasketDto,
+    @Param('id') ticketId,
     @Req() { user },
   ): Promise<IAddToBasket> {
-    return await this.basketService.delete({ ...data, user });
+    return await this.basketService.delete({ ticketId, user });
   }
 }

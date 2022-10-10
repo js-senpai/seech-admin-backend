@@ -153,7 +153,11 @@ export class SellProductsService {
               phone,
               description,
               price,
-              ownTicket: authorId === user.userId,
+              ownTicket: authorId.toString() === user.userId.toString(),
+              inBasket:
+                user.basket.findIndex(
+                  ({ id }) => id.toString() === _id.toString(),
+                ) !== -1,
             });
           }
         }

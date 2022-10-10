@@ -14,5 +14,6 @@ export interface GetProductsInterface {
     otg: string;
     description: string;
     ownTicket: boolean;
+    inBasket: boolean;
   }[];
 }
