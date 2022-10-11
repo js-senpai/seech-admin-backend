@@ -77,6 +77,11 @@
       "buyingTicketOwn": "<b>ХОЧУ КУПИТИ</b>\nПродукт: ${culture}\nАктивний: ${active}\n${weightName}: ${weight} ${weightValue}\nДата: ${date}",
       "sellingTicketOwn": "<b>ПРОДАМ</b>\nПродукт: ${culture}\nАктивний: ${active}\nЦіна: <b>${price}₴/${weightValue}</b>\n${weightName}: ${weight} ${weightValue}\nДата: ${date}\nОпис: ${description}"
     },
+    "bot": {
+      "input": {
+        "createTicketFromApp": "Тикет створено через сайт"
+      }
+    },
     "buttons": {
       "remove": "Видалити 🔴",
       "completed": "Виконано 🟢"

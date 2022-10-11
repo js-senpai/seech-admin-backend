@@ -192,6 +192,28 @@ export class BuyProductsService {
         active: true,
         date: new Date(),
       });
+      await this.userModel.updateOne(
+        {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          _id: user._id,
+        },
+        {
+          state: `createTicketFromApp_${newTicket._id}`,
+        },
+      );
+      await axios.post(
+        `https://api.telegram.org/bot${this.configService.get(
+          'TELEGRAM_TOKEN',
+        )}/sendMessage`,
+        {
+          chat_id: user.userId,
+          text: this.i18n.translate(`index.telegram.bot.input`, {
+            lang: 'ua',
+          }),
+          parse_mode: 'HTML',
+        },
+      );
       const callback = async () => {
         const { modifiedCount } = await newTicket.updateOne({
           active: false,
