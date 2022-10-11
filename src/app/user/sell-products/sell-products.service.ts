@@ -224,9 +224,12 @@ export class SellProductsService {
         )}/sendMessage`,
         {
           chat_id: user.userId,
-          text: this.i18n.translate(`index.telegram.bot.input`, {
-            lang: 'ua',
-          }),
+          text: this.i18n.translate(
+            `index.telegram.bot.input.createTicketFromApp`,
+            {
+              lang: 'ua',
+            },
+          ),
           parse_mode: 'HTML',
         },
       );
