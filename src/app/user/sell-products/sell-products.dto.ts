@@ -61,15 +61,13 @@ export class CreateSellProductsDto {
 
   @IsNotEmpty()
   @IsNumber()
-  @Min(1)
   weight: number;
 
   @IsString()
   @IsOptional()
   description: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsUrl()
-  @IsString()
   photoUrl: string;
 }
