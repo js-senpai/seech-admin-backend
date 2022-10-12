@@ -174,6 +174,7 @@ export class SellProductsService {
   @RoleDecorator(['user'])
   async create({
     typeCode,
+    subtypeCode,
     subtype,
     price,
     weight,
@@ -187,11 +188,17 @@ export class SellProductsService {
       let weightType = 'kilogram';
       const cultureWithLiters = ['honey', 'milk', 'sourCream'];
       const cultureWithTon = ['wheat', 'barley', 'corn', 'buckwheat', 'soy'];
-      if (cultureWithLiters.includes(typeCode)) {
+      if (
+        cultureWithLiters.includes(subtypeCode) ||
+        cultureWithLiters.includes(typeCode)
+      ) {
         weightType = 'liter';
-      } else if (cultureWithTon.includes(typeCode)) {
+      } else if (
+        cultureWithTon.includes(subtypeCode) ||
+        cultureWithTon.includes(typeCode)
+      ) {
         weightType = 'weightTon';
-      } else if (typeCode === 'egg') {
+      } else if (subtypeCode === 'egg') {
         weightType = 'amount';
       }
       // Create new ticket

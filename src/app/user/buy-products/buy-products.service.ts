@@ -165,6 +165,7 @@ export class BuyProductsService {
   @RoleDecorator(['user'])
   async create({
     typeCode,
+    subtypeCode,
     subtype,
     weight,
     description,
@@ -176,10 +177,18 @@ export class BuyProductsService {
       let weightType = 'kilogram';
       const cultureWithLiters = ['honey', 'milk', 'sourCream'];
       const cultureWithTon = ['wheat', 'barley', 'corn', 'buckwheat', 'soy'];
-      if (cultureWithLiters.includes(typeCode)) {
+      if (
+        cultureWithLiters.includes(subtypeCode) ||
+        cultureWithLiters.includes(typeCode)
+      ) {
         weightType = 'liter';
-      } else if (cultureWithTon.includes(typeCode)) {
+      } else if (
+        cultureWithTon.includes(subtypeCode) ||
+        cultureWithTon.includes(typeCode)
+      ) {
         weightType = 'weightTon';
+      } else if (subtypeCode === 'egg') {
+        weightType = 'amount';
       }
       // Create new ticket
       const newTicket = await this.ticketModel.create({
