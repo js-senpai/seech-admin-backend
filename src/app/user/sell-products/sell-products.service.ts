@@ -278,7 +278,7 @@ export class SellProductsService {
               lang: 'ua',
             }),
             weight: newTicket.weight,
-            date: newTicket.date,
+            date: moment(newTicket.date).format('DD.MM.YYYY HH:mm'),
             description: newTicket.description,
           },
         },
