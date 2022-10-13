@@ -211,19 +211,94 @@ export class BuyProductsService {
           state: `createTicketFromApp_${newTicket._id}`,
         },
       );
+      let weightValue;
+      switch (newTicket.weightType) {
+        case 'liter':
+          weightValue = 'volumeValue';
+          break;
+        case 'weight':
+          weightValue = 'weightValue';
+          break;
+        case 'weightTon':
+          weightValue = 'weightTonValue';
+          break;
+        case 'amount':
+          weightValue = 'amountValue';
+          break;
+        default:
+          weightValue = 'weightValue';
+      }
+      let weightName;
+      switch (newTicket.weightType) {
+        case 'liter':
+          weightName = 'volume';
+          break;
+        case 'weight':
+        case 'weightTon':
+          weightName = 'weight';
+          break;
+        case 'amount':
+          weightName = 'amount';
+          break;
+        default:
+          weightName = 'weight';
+      }
+      const ownText = this.i18n.translate(
+        `index.telegram.schedule.buyingTicketOwn`,
+        {
+          lang: 'ua',
+          args: {
+            culture: subtype,
+            active: newTicket.active
+              ? this.i18n.translate('index.telegram.buttons.yes', {
+                  lang: 'ua',
+                })
+              : this.i18n.translate('index.telegram.buttons.no', {
+                  lang: 'ua',
+                }),
+            price: newTicket.price,
+            weightValue: this.i18n.translate(`index.types.${weightValue}`, {
+              lang: 'ua',
+            }),
+            weightName: this.i18n.translate(`index.types.${weightName}`, {
+              lang: 'ua',
+            }),
+            weight: newTicket.weight,
+            date: newTicket.date,
+          },
+        },
+      );
+      const text = `${ownText}\n${this.i18n.translate(
+        `index.telegram.schedule.acceptTicket`,
+        {
+          lang: 'ua',
+        },
+      )}`;
       await axios.post(
         `https://api.telegram.org/bot${this.configService.get(
           'TELEGRAM_TOKEN',
         )}/sendMessage`,
         {
           chat_id: user.userId,
-          text: this.i18n.translate(
-            `index.telegram.bot.input.createTicketFromApp`,
-            {
-              lang: 'ua',
-            },
-          ),
+          text,
           parse_mode: 'HTML',
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: this.i18n.translate(
+                    'index.telegram.buttons.acceptTicket',
+                    {
+                      lang: 'ua',
+                    },
+                  ),
+                  callback_data: JSON.stringify({
+                    command: 'createTicketFromApp',
+                  }),
+                },
+              ],
+            ],
+          },
         },
       );
       const callback = async () => {
@@ -231,38 +306,6 @@ export class BuyProductsService {
           active: false,
         });
         if (modifiedCount) {
-          let weightValue;
-          switch (newTicket.weightType) {
-            case 'liter':
-              weightValue = 'volumeValue';
-              break;
-            case 'weight':
-              weightValue = 'weightValue';
-              break;
-            case 'weightTon':
-              weightValue = 'weightTonValue';
-              break;
-            case 'amount':
-              weightValue = 'amountValue';
-              break;
-            default:
-              weightValue = 'weightValue';
-          }
-          let weightName;
-          switch (newTicket.weightType) {
-            case 'liter':
-              weightName = 'volume';
-              break;
-            case 'weight':
-            case 'weightTon':
-              weightName = 'weight';
-              break;
-            case 'amount':
-              weightName = 'amount';
-              break;
-            default:
-              weightName = 'weight';
-          }
           await axios.post(
             `https://api.telegram.org/bot${this.configService.get(
               'TELEGRAM_TOKEN',
@@ -281,34 +324,10 @@ export class BuyProductsService {
             )}/sendMessage`,
             {
               chat_id: user.userId,
-              text: this.i18n.translate(
-                `index.telegram.schedule.buyingTicketOwn`,
-                {
-                  lang: 'ua',
-                  args: {
-                    culture: subtype,
-                    active: newTicket.active,
-                    price: newTicket.price,
-                    weightValue: this.i18n.translate(
-                      `index.types.${weightValue}`,
-                      {
-                        lang: 'ua',
-                      },
-                    ),
-                    weightName: this.i18n.translate(
-                      `index.types.${weightName}`,
-                      {
-                        lang: 'ua',
-                      },
-                    ),
-                    weight: newTicket.weight,
-                    date: newTicket.date,
-                  },
-                },
-              ),
+              text: ownText,
               parse_mode: 'HTML',
               reply_markup: {
-                inline_keyboards: [
+                inline_keyboard: [
                   [
                     {
                       text: this.i18n.translate(
