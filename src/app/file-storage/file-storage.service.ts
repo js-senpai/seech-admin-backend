@@ -20,7 +20,7 @@ export class FileStorageService {
 
   async uploadFile(file) {
     try {
-      const fileName = file.originalname;
+      const fileName = file.originalname.toLowerCase();
       const uploadFile = this.storage.file(fileName);
       const stream = uploadFile.createWriteStream();
       stream.end(file.buffer);
