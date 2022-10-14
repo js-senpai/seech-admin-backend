@@ -342,7 +342,7 @@ export class SellProductsService {
               text: ownText,
               parse_mode: 'HTML',
               reply_markup: {
-                inline_keyboards: [
+                inline_keyboard: [
                   [
                     {
                       text: this.i18n.translate(
@@ -352,7 +352,6 @@ export class SellProductsService {
                         },
                       ),
                       callback_data: `completed_${newTicket._id}`,
-                      hide: false,
                     },
                   ],
                   [
@@ -364,7 +363,6 @@ export class SellProductsService {
                         },
                       ),
                       callback_data: `remove_${newTicket._id}`,
-                      hide: false,
                     },
                   ],
                 ],
