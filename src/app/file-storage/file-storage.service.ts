@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { join } from 'path';
 import { Storage } from '@google-cloud/storage';
-import * as sharp from 'sharp';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const sharp = require('sharp');
 @Injectable()
 export class FileStorageService {
   bucketName = 'seech-bot';
