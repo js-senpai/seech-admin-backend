@@ -283,19 +283,25 @@ export class SellProductsService {
           },
         },
       );
-      const text = `${ownText}\n${this.i18n.translate(
-        `index.telegram.schedule.acceptTicket`,
-        {
-          lang: 'ua',
-        },
-      )}`;
       await axios.post(
         `https://api.telegram.org/bot${this.configService.get(
           'TELEGRAM_TOKEN',
         )}/sendMessage`,
         {
           chat_id: user.userId,
-          text,
+          text: ownText,
+          parse_mode: 'HTML',
+        },
+      );
+      await axios.post(
+        `https://api.telegram.org/bot${this.configService.get(
+          'TELEGRAM_TOKEN',
+        )}/sendMessage`,
+        {
+          chat_id: user.userId,
+          text: this.i18n.translate(`index.telegram.schedule.acceptTicket`, {
+            lang: 'ua',
+          }),
           parse_mode: 'HTML',
           reply_markup: {
             inline_keyboard: [
