@@ -18,11 +18,16 @@ import { BuyProductsModule } from './app/user/buy-products/buy-products.module';
 import { TicketImageModule } from './app/ticket-image/ticket-image.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { BasketModule } from './app/user/basket/basket.module';
+import { memoryStorage } from 'multer';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    MulterModule.register({
+      storage: memoryStorage(),
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],

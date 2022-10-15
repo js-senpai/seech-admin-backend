@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { join } from 'path';
 import { Storage } from '@google-cloud/storage';
-
+import * as sharp from 'sharp';
 @Injectable()
 export class FileStorageService {
   bucketName = 'seech-bot';
@@ -20,10 +20,14 @@ export class FileStorageService {
 
   async uploadFile(file) {
     try {
-      const fileName = file.originalname.toLowerCase();
+      const fileName = file.originalname;
       const uploadFile = this.storage.file(fileName);
+      const buffer = await sharp(file.buffer)
+        .jpeg({ progressive: true, force: false, quality: 75 })
+        .png({ progressive: true, force: false, quality: 75 })
+        .toBuffer();
       const stream = uploadFile.createWriteStream();
-      stream.end(file.buffer);
+      await stream.end(buffer);
       await this.storage.makePublic();
       return {
         url: `https://storage.googleapis.com/${this.bucketName}/${fileName}`,
