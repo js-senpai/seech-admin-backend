@@ -18,6 +18,6 @@ jobs:
             cd /home/backend/project/
             git config --global --add safe.directory /home/backend/project
             sudo git pull origin main
-            sudo npm i
+            sudo npm i --unsafe-perm
             npm run build
             pm2 restart backend
