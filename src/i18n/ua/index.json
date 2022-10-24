@@ -49,7 +49,8 @@
     },
     "otherList": {
       "honey": "\uD83C\uDF6F Мед",
-      "walnuts": "\uD83E\uDD5C Горіхи"
+      "walnuts": "\uD83E\uDD5C Горіхи",
+      "wood": "\uD83E\uDEB5 Дрова"
     }
   },
   "cereals":"\uD83C\uDF3D Зернові",
@@ -59,11 +60,13 @@
   "honey": "\uD83C\uDF6F Мед",
   "walnuts": "\uD83E\uDD5C Горіхи",
   "milks": "\uD83E\uDD5B Молоко",
+  "wood": "\uD83E\uDEB5 Дрова",
   "other": "Інше",
   "types": {
     "weight": "Вага",
     "weightValue": "кг",
     "weightTonValue": "т",
+    "weightCubeValue": "куб. м.",
     "volume": "Обсяг",
     "volumeValue": "л",
     "amount": "Кількість",
