@@ -19,3 +19,8 @@ export interface GetMyRequestsInterface {
 export interface ISuccessfulMyRequest {
   ok: string;
 }
+
+export interface ITotalMyRequests {
+  totalBuy: number;
+  totalSell: number;
+}

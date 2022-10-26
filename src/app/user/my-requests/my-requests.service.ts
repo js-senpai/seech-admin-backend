@@ -14,6 +14,7 @@ import * as moment from 'moment';
 import {
   GetMyRequestsInterface,
   ISuccessfulMyRequest,
+  ITotalMyRequests,
 } from './my-requests.interface';
 import { ActionMyRequestsDto, MyRequestsDto } from './my-requests.dto';
 
@@ -28,17 +29,15 @@ export class MyRequestsService {
   ) {}
 
   @RoleDecorator(['user'])
-  async get({
+  async getTotal({
     startDate = '',
     endDate = '',
     types = '',
     subtypes = '',
     user,
-    isSale = true,
   }: MyRequestsDto & {
     user: User;
-    isSale: boolean;
-  }): Promise<GetMyRequestsInterface> {
+  }): Promise<ITotalMyRequests> {
     try {
       const typesList = types.split(',').flatMap((name) =>
         Object.values(
@@ -47,9 +46,46 @@ export class MyRequestsService {
           }),
         ),
       );
+      const getTotalSellTickets = await this.ticketModel.find(
+        {
+          sale: true,
+          active: true,
+          authorId: user.userId,
+          ...((types || subtypes) && {
+            culture: {
+              $in: [...typesList, ...subtypes.split(',')],
+            },
+          }),
+        },
+        null,
+        {
+          createdAt: -1,
+        },
+      );
+      const filteredTotalSellTickets = (
+        startDate && endDate
+          ? getTotalSellTickets.filter(
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              ({ createdAt }) =>
+                createdAt &&
+                moment(createdAt).isBetween(
+                  moment(startDate, 'DD-MM-YYYY'),
+                  moment(endDate, 'DD-MM-YYYY'),
+                  'day',
+                  '[]',
+                ),
+            )
+          : getTotalSellTickets
+      ).filter(
+        ({ date }) =>
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          Date.now() - date <= 24 * 60 * 60 * 1000,
+      );
       const getTotalBuyTickets = await this.ticketModel.find(
         {
-          sale: isSale,
+          sale: false,
           active: true,
           authorId: user.userId,
           ...((types || subtypes) && {
@@ -84,6 +120,75 @@ export class MyRequestsService {
           // @ts-ignore
           Date.now() - date <= 24 * 60 * 60 * 1000,
       );
+      return {
+        totalBuy: filteredTotalBuyTickets.length,
+        totalSell: filteredTotalSellTickets.length,
+      };
+    } catch (e) {
+      this.logger.error(`Error in get total my requests method.  ${e}`);
+      throw new InternalServerErrorException(
+        `Error in get total my requests method.  ${e}`,
+      );
+    }
+  }
+
+  @RoleDecorator(['user'])
+  async get({
+    startDate = '',
+    endDate = '',
+    types = '',
+    subtypes = '',
+    user,
+    isSale = true,
+  }: MyRequestsDto & {
+    user: User;
+    isSale: boolean;
+  }): Promise<GetMyRequestsInterface> {
+    try {
+      const typesList = types.split(',').flatMap((name) =>
+        Object.values(
+          this.i18n.translate(`index.productsList.${name}List`, {
+            lang: 'ua',
+          }),
+        ),
+      );
+      const getTotalTickets = await this.ticketModel.find(
+        {
+          sale: isSale,
+          active: true,
+          authorId: user.userId,
+          ...((types || subtypes) && {
+            culture: {
+              $in: [...typesList, ...subtypes.split(',')],
+            },
+          }),
+        },
+        null,
+        {
+          createdAt: -1,
+        },
+      );
+      const filteredTotalTickets = (
+        startDate && endDate
+          ? getTotalTickets.filter(
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              ({ createdAt }) =>
+                createdAt &&
+                moment(createdAt).isBetween(
+                  moment(startDate, 'DD-MM-YYYY'),
+                  moment(endDate, 'DD-MM-YYYY'),
+                  'day',
+                  '[]',
+                ),
+            )
+          : getTotalTickets
+      ).filter(
+        ({ date }) =>
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          Date.now() - date <= 24 * 60 * 60 * 1000,
+      );
       const response: GetMyRequestsInterface = {
         items: [],
       };
@@ -101,7 +206,7 @@ export class MyRequestsService {
         _id,
         weightType = 'not set',
         price,
-      } of filteredTotalBuyTickets) {
+      } of filteredTotalTickets) {
         if (createdAt) {
           response.items.push({
             _id,

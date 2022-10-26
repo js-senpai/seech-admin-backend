@@ -6,17 +6,29 @@ import {
   Put,
   Query,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { MyRequestsService } from './my-requests.service';
 import BuyProductsDto from '../buy-products/buy-products.dto';
 import {
   GetMyRequestsInterface,
   ISuccessfulMyRequest,
+  ITotalMyRequests,
 } from './my-requests.interface';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('my-requests')
+@UseGuards(AuthGuard())
 export class MyRequestsController {
   constructor(private readonly myRequestsService: MyRequestsService) {}
+
+  @Get('total')
+  async getTotal(
+    @Query() query: BuyProductsDto,
+    @Req() { user },
+  ): Promise<ITotalMyRequests> {
+    return await this.myRequestsService.getTotal({ ...query, user });
+  }
 
   @Get('buy')
   async getBuy(
