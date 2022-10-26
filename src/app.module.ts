@@ -20,6 +20,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { BasketModule } from './app/user/basket/basket.module';
 import { memoryStorage } from 'multer';
 import { MulterModule } from '@nestjs/platform-express';
+import { MyRequestsModule } from './app/user/my-requests/my-requests.module';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { MulterModule } from '@nestjs/platform-express';
     BuyProductsModule,
     TicketImageModule,
     BasketModule,
+    MyRequestsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
