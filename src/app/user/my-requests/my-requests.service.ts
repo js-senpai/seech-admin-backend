@@ -209,6 +209,7 @@ export class MyRequestsService {
         weightType = 'not set',
         price,
         active,
+        photoUrl,
       } of filteredTotalTickets) {
         if (createdAt) {
           response.items.push({
@@ -225,6 +226,9 @@ export class MyRequestsService {
             phone,
             description,
             price,
+            ...(isSale && {
+              img: photoUrl,
+            }),
           });
         }
       }

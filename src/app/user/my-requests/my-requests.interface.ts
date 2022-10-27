@@ -1,5 +1,6 @@
 export interface GetMyRequestsInterface {
   items: {
+    img?: string;
     active: boolean;
     _id: string;
     title: string;
