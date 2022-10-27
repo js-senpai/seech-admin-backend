@@ -50,6 +50,7 @@ export class MyRequestsService {
         {
           sale: true,
           active: true,
+          completed: false,
           authorId: user.userId,
           ...((types || subtypes) && {
             culture: {
@@ -87,6 +88,7 @@ export class MyRequestsService {
         {
           sale: false,
           active: true,
+          completed: false,
           authorId: user.userId,
           ...((types || subtypes) && {
             culture: {
@@ -155,7 +157,7 @@ export class MyRequestsService {
       const getTotalTickets = await this.ticketModel.find(
         {
           sale: isSale,
-          active: true,
+          completed: false,
           authorId: user.userId,
           ...((types || subtypes) && {
             culture: {
@@ -206,10 +208,12 @@ export class MyRequestsService {
         _id,
         weightType = 'not set',
         price,
+        active,
       } of filteredTotalTickets) {
         if (createdAt) {
           response.items.push({
             _id,
+            active,
             updatedAt,
             title: culture,
             weight,

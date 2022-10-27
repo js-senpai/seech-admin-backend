@@ -1,8 +1,8 @@
 export interface GetMyRequestsInterface {
   items: {
+    active: boolean;
     _id: string;
     title: string;
-    img?: string;
     updatedAt: string;
     price: number;
     weight: number;
