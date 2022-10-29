@@ -11,12 +11,12 @@ import { Ticket, TicketDocument } from '../../../common/schemas/ticket.schema';
 import { I18nService } from 'nestjs-i18n';
 import { RoleDecorator } from '../../../common/decorators/role.decorator';
 import * as moment from 'moment';
-import {
-  GetMyRequestsInterface,
-  ISuccessfulMyRequest,
-  ITotalMyRequests,
-} from './my-requests.interface';
 import { ActionMyRequestsDto, MyRequestsDto } from './my-requests.dto';
+import {
+  GetRequestsInterface,
+  ISuccessfulRequest,
+  ITotalRequests,
+} from '../../../common/interfaces/requests.interfaces';
 
 @Injectable()
 export class MyRequestsService {
@@ -37,7 +37,7 @@ export class MyRequestsService {
     user,
   }: MyRequestsDto & {
     user: User;
-  }): Promise<ITotalMyRequests> {
+  }): Promise<ITotalRequests> {
     try {
       const typesList = types.split(',').flatMap((name) =>
         Object.values(
@@ -49,6 +49,7 @@ export class MyRequestsService {
       const getTotalSellTickets = await this.ticketModel.find(
         {
           sale: true,
+          deleted: false,
           authorId: user.userId,
           ...((types || subtypes) && {
             culture: {
@@ -85,6 +86,7 @@ export class MyRequestsService {
       const getTotalBuyTickets = await this.ticketModel.find(
         {
           sale: false,
+          deleted: false,
           authorId: user.userId,
           ...((types || subtypes) && {
             culture: {
@@ -141,7 +143,7 @@ export class MyRequestsService {
   }: MyRequestsDto & {
     user: User;
     isSale: boolean;
-  }): Promise<GetMyRequestsInterface> {
+  }): Promise<GetRequestsInterface> {
     try {
       const typesList = types.split(',').flatMap((name) =>
         Object.values(
@@ -152,6 +154,7 @@ export class MyRequestsService {
       );
       const getTotalTickets = await this.ticketModel.find(
         {
+          deleted: false,
           sale: isSale,
           authorId: user.userId,
           ...((types || subtypes) && {
@@ -186,7 +189,7 @@ export class MyRequestsService {
           // @ts-ignore
           Date.now() - date <= 24 * 60 * 60 * 1000,
       );
-      const response: GetMyRequestsInterface = {
+      const response: GetRequestsInterface = {
         items: [],
       };
       const { region, countryState, countryOtg, name, phone } = user;
@@ -240,21 +243,33 @@ export class MyRequestsService {
   async complete({
     id,
     user,
-    isSale,
   }: ActionMyRequestsDto & {
     user: User;
-    isSale: boolean;
-  }): Promise<ISuccessfulMyRequest> {
+  }): Promise<ISuccessfulRequest> {
     try {
       await this.ticketModel.updateOne(
         {
           _id: id,
           authorId: user.userId,
-          sale: isSale,
         },
         {
           active: false,
           completed: true,
+          waitingForReview: true,
+        },
+      );
+      await this.userModel.updateMany(
+        {
+          basket: {
+            id,
+          },
+        },
+        {
+          $pull: {
+            basket: {
+              id,
+            },
+          },
         },
       );
       return {
@@ -272,21 +287,18 @@ export class MyRequestsService {
   async delete({
     id,
     user,
-    isSale,
   }: ActionMyRequestsDto & {
     user: User;
-    isSale: boolean;
-  }): Promise<ISuccessfulMyRequest> {
+  }): Promise<ISuccessfulRequest> {
     try {
       await this.ticketModel.updateOne(
         {
           _id: id,
           authorId: user.userId,
-          sale: isSale,
         },
         {
           active: false,
-          completed: true,
+          deleted: true,
         },
       );
       await this.userModel.updateMany(
@@ -318,16 +330,13 @@ export class MyRequestsService {
   async extend({
     id,
     user,
-    isSale,
   }: ActionMyRequestsDto & {
     user: User;
-    isSale: boolean;
-  }): Promise<ISuccessfulMyRequest> {
+  }): Promise<ISuccessfulRequest> {
     try {
       const ticket = await this.ticketModel.findOne({
         _id: id,
         authorId: user.userId,
-        isSale,
       });
       if (!ticket) {
         throw new NotFoundException(`Ticket with id ${id} not found`);

@@ -1,7 +1,7 @@
-export interface GetMyRequestsInterface {
+export interface GetRequestsInterface {
   items: {
     img?: string;
-    active: boolean;
+    active?: boolean;
     _id: string;
     title: string;
     updatedAt: string;
@@ -17,11 +17,11 @@ export interface GetMyRequestsInterface {
   }[];
 }
 
-export interface ISuccessfulMyRequest {
+export interface ISuccessfulRequest {
   ok: string;
 }
 
-export interface ITotalMyRequests {
+export interface ITotalRequests {
   totalBuy: number;
   totalSell: number;
 }

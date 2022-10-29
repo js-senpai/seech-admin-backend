@@ -12,6 +12,12 @@ import { Ticket, TicketDocument } from '../../../common/schemas/ticket.schema';
 import { BasketDto } from './basket.dto';
 import { IAddToBasket, ITotalInBasket } from './basket.interface';
 import { RoleDecorator } from '../../../common/decorators/role.decorator';
+import {
+  GetRequestsInterface,
+  ISuccessfulRequest,
+  ITotalRequests,
+} from '../../../common/interfaces/requests.interfaces';
+import { ActionMyRequestsDto } from '../my-requests/my-requests.dto';
 
 @Injectable()
 export class BasketService {
@@ -68,6 +74,32 @@ export class BasketService {
       );
     }
   }
+  @RoleDecorator(['user'])
+  async getTotalByTypes({ user }: { user: User }): Promise<ITotalRequests> {
+    try {
+      return {
+        totalBuy: await this.ticketModel.count({
+          _id: {
+            $in: user.basket.map(({ id }) => id),
+          },
+          sale: false,
+        }),
+        totalSell: await this.ticketModel.count({
+          _id: {
+            $in: user.basket.map(({ id }) => id),
+          },
+          sale: true,
+        }),
+      };
+    } catch (e) {
+      this.logger.error(
+        `Error in get total by types tickets in basket method.  ${e}`,
+      );
+      throw new InternalServerErrorException(
+        `Error in get total tickets by types in basket method.  ${e}`,
+      );
+    }
+  }
 
   @RoleDecorator(['user'])
   async getTotal({ user }: { user: User }): Promise<ITotalInBasket> {
@@ -119,6 +151,109 @@ export class BasketService {
       this.logger.error(`Error in delete ticket from basket method.  ${e}`);
       throw new InternalServerErrorException(
         `Error in delete ticket from basket method.  ${e}`,
+      );
+    }
+  }
+
+  @RoleDecorator(['user'])
+  async complete({
+    id,
+    user,
+  }: ActionMyRequestsDto & {
+    user: User;
+  }): Promise<ISuccessfulRequest> {
+    try {
+      const getTicket = await this.ticketModel.findById(id);
+      if (!getTicket) {
+        throw new NotFoundException(`Ticket with id ${id} not found!`);
+      }
+      if (getTicket.authorId === user.userId) {
+        throw new ForbiddenException(
+          'You cant complete own ticket from basket!',
+        );
+      }
+      await this.userModel.updateOne(
+        {
+          userId: user.userId,
+        },
+        {
+          $pull: {
+            basket: {
+              id,
+            },
+          },
+        },
+      );
+      return {
+        ok: 'Ticket has successfully completed',
+      };
+    } catch (e) {
+      this.logger.error(
+        `Error in complete ticket status in basket method.  ${e}`,
+      );
+      throw new InternalServerErrorException(
+        `Error in complete ticket status in basket method.  ${e}`,
+      );
+    }
+  }
+
+  @RoleDecorator(['user'])
+  async get({
+    isSell = true,
+    user,
+  }: {
+    isSell: boolean;
+    user: User;
+  }): Promise<GetRequestsInterface> {
+    try {
+      const getTickets = await this.ticketModel.find({
+        sale: isSell,
+        _id: {
+          $in: user.basket.map(({ id }) => id),
+        },
+      });
+      const response: GetRequestsInterface = {
+        items: [],
+      };
+      const { region, countryState, countryOtg, name, phone } = user;
+      for (const {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        createdAt,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        updatedAt,
+        culture,
+        description = '',
+        weight,
+        _id,
+        weightType = 'not set',
+        price,
+        photoUrl,
+      } of getTickets) {
+        if (createdAt) {
+          response.items.push({
+            _id,
+            updatedAt,
+            title: culture,
+            weight,
+            weightType,
+            region,
+            state: countryState,
+            otg: countryOtg,
+            author: name,
+            phone,
+            description,
+            price,
+            img: photoUrl,
+          });
+        }
+      }
+      return response;
+    } catch (e) {
+      this.logger.error(`Error in get tickets from basket method.  ${e}`);
+      throw new InternalServerErrorException(
+        `Error in get tickets from basket method.  ${e}`,
       );
     }
   }

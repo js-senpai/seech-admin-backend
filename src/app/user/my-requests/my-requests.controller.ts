@@ -10,12 +10,12 @@ import {
 } from '@nestjs/common';
 import { MyRequestsService } from './my-requests.service';
 import BuyProductsDto from '../buy-products/buy-products.dto';
-import {
-  GetMyRequestsInterface,
-  ISuccessfulMyRequest,
-  ITotalMyRequests,
-} from './my-requests.interface';
 import { AuthGuard } from '@nestjs/passport';
+import {
+  GetRequestsInterface,
+  ISuccessfulRequest,
+  ITotalRequests,
+} from '../../../common/interfaces/requests.interfaces';
 
 @Controller('my-requests')
 @UseGuards(AuthGuard())
@@ -26,7 +26,7 @@ export class MyRequestsController {
   async getTotal(
     @Query() query: BuyProductsDto,
     @Req() { user },
-  ): Promise<ITotalMyRequests> {
+  ): Promise<ITotalRequests> {
     return await this.myRequestsService.getTotal({ ...query, user });
   }
 
@@ -34,7 +34,7 @@ export class MyRequestsController {
   async getBuy(
     @Query() query: BuyProductsDto,
     @Req() { user },
-  ): Promise<GetMyRequestsInterface> {
+  ): Promise<GetRequestsInterface> {
     return await this.myRequestsService.get({ ...query, user, isSale: false });
   }
 
@@ -42,55 +42,31 @@ export class MyRequestsController {
   async getSell(
     @Query() query: BuyProductsDto,
     @Req() { user },
-  ): Promise<GetMyRequestsInterface> {
+  ): Promise<GetRequestsInterface> {
     return await this.myRequestsService.get({ ...query, user, isSale: true });
   }
 
-  @Put('/buy/complete/:id')
-  async completeBuy(
+  @Put('/complete/:id')
+  async complete(
     @Req() { user },
     @Param('id') id: string,
-  ): Promise<ISuccessfulMyRequest> {
-    return await this.myRequestsService.complete({ user, isSale: false, id });
+  ): Promise<ISuccessfulRequest> {
+    return await this.myRequestsService.complete({ user, id });
   }
 
-  @Put('/sell/complete/:id')
-  async completeSell(
+  @Put('/extend/:id')
+  async extend(
     @Req() { user },
     @Param('id') id: string,
-  ): Promise<ISuccessfulMyRequest> {
-    return await this.myRequestsService.complete({ user, isSale: true, id });
+  ): Promise<ISuccessfulRequest> {
+    return await this.myRequestsService.extend({ user, id });
   }
 
-  @Put('/buy/extend/:id')
-  async extendBuy(
+  @Delete('/:id')
+  async delete(
     @Req() { user },
     @Param('id') id: string,
-  ): Promise<ISuccessfulMyRequest> {
-    return await this.myRequestsService.extend({ user, isSale: false, id });
-  }
-
-  @Put('/sell/extend/:id')
-  async extendSell(
-    @Req() { user },
-    @Param('id') id: string,
-  ): Promise<ISuccessfulMyRequest> {
-    return await this.myRequestsService.extend({ user, isSale: true, id });
-  }
-
-  @Delete('/buy/:id')
-  async deleteBuy(
-    @Req() { user },
-    @Param('id') id: string,
-  ): Promise<ISuccessfulMyRequest> {
-    return await this.myRequestsService.delete({ user, isSale: false, id });
-  }
-
-  @Delete('/sell/:id')
-  async deleteSell(
-    @Req() { user },
-    @Param('id') id: string,
-  ): Promise<ISuccessfulMyRequest> {
-    return await this.myRequestsService.delete({ user, isSale: true, id });
+  ): Promise<ISuccessfulRequest> {
+    return await this.myRequestsService.delete({ user, id });
   }
 }
