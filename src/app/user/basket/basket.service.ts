@@ -105,7 +105,11 @@ export class BasketService {
   async getTotal({ user }: { user: User }): Promise<ITotalInBasket> {
     try {
       return {
-        total: user.basket.length,
+        total: await this.ticketModel.count({
+          _id: {
+            $in: user.basket.map(({ id }) => id),
+          },
+        }),
       };
     } catch (e) {
       this.logger.error(`Error in get total tickets in basket method.  ${e}`);
