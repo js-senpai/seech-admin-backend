@@ -223,9 +223,6 @@ export class BasketService {
       for (const {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        createdAt,
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
         updatedAt,
         culture,
         description = '',
@@ -235,23 +232,21 @@ export class BasketService {
         price,
         photoUrl,
       } of getTickets) {
-        if (createdAt) {
-          response.items.push({
-            _id,
-            updatedAt,
-            title: culture,
-            weight,
-            weightType,
-            region,
-            state: countryState,
-            otg: countryOtg,
-            author: name,
-            phone,
-            description,
-            price,
-            img: photoUrl,
-          });
-        }
+        response.items.push({
+          _id,
+          updatedAt,
+          title: culture,
+          weight,
+          weightType,
+          region,
+          state: countryState,
+          otg: countryOtg,
+          author: name,
+          phone,
+          description,
+          price,
+          img: photoUrl,
+        });
       }
       return response;
     } catch (e) {
