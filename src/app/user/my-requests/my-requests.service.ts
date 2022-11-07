@@ -188,13 +188,15 @@ export class MyRequestsService {
         _id,
         weightType = 'not set',
         price,
-        active,
         photoUrl,
+        date,
       } of filteredTotalTickets) {
         if (createdAt) {
           response.items.push({
             _id,
-            active,
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            active: Date.now() - date <= 24 * 60 * 60 * 1000,
             updatedAt,
             title: culture,
             weight,
