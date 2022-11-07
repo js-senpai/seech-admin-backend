@@ -62,7 +62,7 @@ export class MyRequestsService {
           createdAt: -1,
         },
       );
-      const filteredTotalSellTickets = (
+      const filteredTotalSellTickets =
         startDate && endDate
           ? getTotalSellTickets.filter(
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -76,13 +76,7 @@ export class MyRequestsService {
                   '[]',
                 ),
             )
-          : getTotalSellTickets
-      ).filter(
-        ({ date }) =>
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          Date.now() - date <= 24 * 60 * 60 * 1000,
-      );
+          : getTotalSellTickets;
       const getTotalBuyTickets = await this.ticketModel.find(
         {
           sale: false,
@@ -99,7 +93,7 @@ export class MyRequestsService {
           createdAt: -1,
         },
       );
-      const filteredTotalBuyTickets = (
+      const filteredTotalBuyTickets =
         startDate && endDate
           ? getTotalBuyTickets.filter(
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -113,13 +107,7 @@ export class MyRequestsService {
                   '[]',
                 ),
             )
-          : getTotalBuyTickets
-      ).filter(
-        ({ date }) =>
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          Date.now() - date <= 24 * 60 * 60 * 1000,
-      );
+          : getTotalBuyTickets;
       return {
         totalBuy: filteredTotalBuyTickets.length,
         totalSell: filteredTotalSellTickets.length,
@@ -168,7 +156,7 @@ export class MyRequestsService {
           createdAt: -1,
         },
       );
-      const filteredTotalTickets = (
+      const filteredTotalTickets =
         startDate && endDate
           ? getTotalTickets.filter(
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -182,13 +170,7 @@ export class MyRequestsService {
                   '[]',
                 ),
             )
-          : getTotalTickets
-      ).filter(
-        ({ date }) =>
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          Date.now() - date <= 24 * 60 * 60 * 1000,
-      );
+          : getTotalTickets;
       const response: GetRequestsInterface = {
         items: [],
       };
@@ -341,11 +323,17 @@ export class MyRequestsService {
       if (!ticket) {
         throw new NotFoundException(`Ticket with id ${id} not found`);
       }
-      await this.ticketModel.updateOne({
-        date: new Date(),
-        active: true,
-        numberOfExtends: ticket.numberOfExtends + 1,
-      });
+      await this.ticketModel.updateOne(
+        {
+          _id: id,
+          authorId: user.userId,
+        },
+        {
+          date: new Date(),
+          active: true,
+          numberOfExtends: ticket.numberOfExtends + 1,
+        },
+      );
       return {
         ok: 'Ticket has successfully extended',
       };
