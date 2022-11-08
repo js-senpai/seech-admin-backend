@@ -49,6 +49,7 @@ export class MyRequestsService {
       const getTotalSellTickets = await this.ticketModel.find(
         {
           sale: true,
+          completed: false,
           deleted: false,
           authorId: user.userId,
           ...((types || subtypes) && {
@@ -81,6 +82,7 @@ export class MyRequestsService {
         {
           sale: false,
           deleted: false,
+          completed: false,
           authorId: user.userId,
           ...((types || subtypes) && {
             culture: {
@@ -143,6 +145,7 @@ export class MyRequestsService {
       const getTotalTickets = await this.ticketModel.find(
         {
           deleted: false,
+          completed: false,
           sale: isSale,
           authorId: user.userId,
           ...((types || subtypes) && {
